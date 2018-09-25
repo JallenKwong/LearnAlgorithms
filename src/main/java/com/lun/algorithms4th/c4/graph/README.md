@@ -298,6 +298,8 @@ DFS|BFS
 
 [间隔的度数](DegreesOfSeparation.java)
 
+---
+
 **小结**
 
 得到解决的无向图处理问题
@@ -482,28 +484,101 @@ DFS|BFS
 
 ### 有向图中强连通性 ###
 
+在一幅无向图，如果有一条路径连接顶点v和w，则它们就是连通的——既可以由这路径从w到达v，也可以从v到达w
 
+**定义 如果两个顶点v和w是相互可达的，则称它们为强连通的。也就是说，既存在一条从v到w的有向路径，也存在一条w到v的有效路径。若一幅有向图的任意两个顶点都是强连通的，则称这幅有向图也是强连通的**
 
+![强连通图的例子](image/strongly-connected-digraph.png)
 
+**两个顶点是强连通的当且仅当它们都在一个普通的有向环中**
 
+---
 
+**强连通分量**
 
+有向图强连通性具有自反性、对称性、传递性性质
 
+作为一种等价关系，强连通性将所有顶点分为了一些等价类，每个等价类都是由相互均为强连通的顶点的最大子集合组成的。我们将这些子集称为**强连通分量**
 
+![](image/strong-components.png)
 
+上图有5个强连通分量
 
+**注意**一个含有V个顶点的有向图含有1~V个强连通分量——一个强连通只含有一个强连通分量，而一个有向无环图中则含有V个强连通分量
 
+**强连通分量的定义是基于顶点的，而非边**
 
+---
 
+**强连通分量的应用**
 
+应用|顶点|边
+---|---|---
+网络|网页|超链接
+教科书|话题|引用
+软件|模块|调用
+食物网|物种|捕食关系
 
+食物网这种有向图能够帮助生态学家理解食物链中的能量流动
 
+![](image/food-web.png)
 
+下图是网络内容的有向图，其中顶点表示网页，而边表示从页面指向另一个页面的超链接。
 
+![](image/internet.png)
 
+这样一幅有向图，强连通分量能够帮助网络工程师将网络中数量庞大的网页分为多个大小可以接受的部分分别进行处理。
 
+---
 
+**[计算强连通分量的Kosaraju的算法](KosarajuSharirSCC.java)**
 
+- 在给定的一幅图G中，使用[DepthFirstOrder](DepthFirstOrder.java)计算它的反向图G^R的**逆后序排序**
+- 在G中进行标准的**深度优先搜索DFS**，但是要按照刚才计算得到的顺序而非标准的顺序来访问所有未被标记的顶点
+- 在构造函数中，所有同一个递归dfs()调用中被访问到的顶点都在同一个**强连通分量重**中，将它们按照和[ConnectedComponents](ConnectedComponents.java)相同方式识别出来
 
+**命题H 使用深度优先搜索查找给定有向图G的 反向**图G^R **，根据由此得到的所有顶点的 **逆后序** 再次用DFS处理有向图（Kosaraju算法），其构造函数中的每一次递归调用所标记的顶点都在同一个强连通分量中。**
 
+![Kosaraju算法的正确性证明](image/kosaraju.png)
 
+![Kosaraju计算轨迹图](image/kosaraju-trace.png)
+
+**强连通性** 给定一幅有向图，回答“给定的两个顶点是强连通的吗？这幅有向图含有多少强连通分量？”等类似问题
+
+**命题I Kosaraju算法的预处理所需的时间和空间与V+E成正比且支持常数时间的有向图强连通性的查询。**
+
+---
+
+**再谈可达性**
+
+**顶点对的可达性** 给定一幅有向图，回答“是否存在一条从一个给定的顶点v到另一个给定的顶点w的路径”
+
+**定义 有向图G的传递闭包是由相同的一组顶点组成的另一幅有向图，在传递闭包中存在一条从v指向w的边当且仅当在G中w是从v可达的**
+
+![](image/transitive-closure.png)
+
+[顶点对的可达性](TransitiveClosure.java)
+
+这是理想的解决方法，但是它不适用于大型有向图，因为 **构造函数所需的空间和V^2成正比，所需的时间和V(V+E)成正比**：共有V个DirectedDFS对象，每个所需的空间都与V成正比（它们都含有大小为V的marked[]数组并会检查E条边来计算标记）
+
+能够大幅度较少预处理所需的时间和空间同时又保证常数时间的查询吗？用远小于平方级的空间支持常数级别的查询的一般解决方案仍然是一个有待解决的研究问题。
+
+---
+
+**小结**
+
+得到解决的有向图处理的问题
+
+问题|解决方法
+---|---
+单点和多点的可达性|[DirectedDFS](DirectedDFS.java)
+单点有向路径|[DepthFirstDirectedPaths](DepthFirstDirectedPaths.java)
+单点最短有向路径|[BreadthFirstDirectedPaths](BreadthFirstDirectedPaths.java)
+有向环检测|[DirectedCycle](DirectedCycle.java)
+深度优先的顶点排序|[DepthFirstOrder](DepthFirstOrder.java)
+优先级限制下的调度问题|[Topological](Topological.java)
+拓扑排序|[Topological](Topological.java)
+强连通性|[KosarajuSharirSCC](KosarajuSharirSCC.java)
+顶点对的可达性|[TransitiveClosure](TransitiveClosure.java)
+
+## 最小生成树 ##
