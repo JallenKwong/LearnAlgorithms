@@ -337,9 +337,13 @@ public class IndexMinPQ<Key extends Comparable<Key>> implements Iterable<Integer
 
         IndexMinPQ<String> pq = new IndexMinPQ<String>(strings.length);
         for (int i = 0; i < strings.length; i++) {
+        	System.out.println(i + " " + strings[i]);
             pq.insert(i, strings[i]);
         }
 
+        
+        System.out.println();
+        
         // delete and print each key
         while (!pq.isEmpty()) {
             int i = pq.delMin();
