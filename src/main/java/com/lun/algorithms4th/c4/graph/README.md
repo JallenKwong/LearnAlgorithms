@@ -915,3 +915,17 @@ Kruskal算法的实现并不困难：我们将会使用一条优先队列来按�
 
 ### Dijkstra（音 Die si zhua）算法 ###
 
+>**命题R** Dijkstra算法能够解决边权重非负的加权有向图的单起点最短路径问题
+
+>Dijkstra算法基本思想：首先将distTo[s]初始化为0，distTo中的其他元素初始化为正无穷。然后将distTo[]最小的非树点放松并加入树中，如此一来，直到所有顶点都在树中或者所有的非树顶点的distTo[]值均为无穷大
+
+![](image/dijkstra.png)
+
+>**命题R(续)** 在一幅含有V个顶点和E条边的加权有向图中，使用Dijkstra算法计算根节点为给定起点的最短路径树所需的空间与V成正比，时间与ElogV成正比
+
+[Dijkstra算法](DijkstraSP.java)
+
+
+
+
+
