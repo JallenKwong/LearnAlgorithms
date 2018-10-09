@@ -2,6 +2,28 @@
 
 **理解算法的最好方法是在一个简单的例子中跟踪它的行为。**
 
+---
+
+**索引**
+
+[1.无向图](#无向图)
+
+[无向图小结](#无向图小结)
+
+[2.有向图](#有向图)
+
+[有向图小结](#有向图小结)
+
+[3.最小生成树](#最小生成树)
+
+[最小生成树小结](#最小生成树小结)
+
+[4.最短路径](#最短路径)
+
+[最短路径小结](#最短路径小结)
+
+---
+
 **图的典型利用**
 
 应用|结点|连接
@@ -300,7 +322,7 @@ DFS|BFS
 
 ---
 
-**小结**
+### 无向图小结 ###
 
 得到解决的无向图处理问题
 
@@ -312,6 +334,8 @@ DFS|BFS
 连通性|[ConnectedComponents](ConnectedComponents.java)
 检测环|[Cycle](Cycle.java)
 双色问题(图的二分性)|[Bipartite](Bipartite.java)
+
+---
 
 ## 有向图 ##
 
@@ -565,7 +589,7 @@ DFS|BFS
 
 ---
 
-**小结**
+### 有向图小结 ###
 
 得到解决的有向图处理的问题
 
@@ -580,6 +604,8 @@ DFS|BFS
 拓扑排序|[Topological](Topological.java)
 强连通性|[KosarajuSharirSCC](KosarajuSharirSCC.java)
 顶点对的可达性|[TransitiveClosure](TransitiveClosure.java)
+
+---
 
 ## 最小生成树 ##
 
@@ -756,6 +782,16 @@ Kruskal算法的实现并不困难：我们将会使用一条优先队列来按�
 >**命题N(续) Kruskal算法的计算一幅含有V个顶点和E条边的连通加权无向图的最小生成树所需的空间和E成正比，所需时间和ElogE成正比(最坏情况)**
 
 ![](image/kruskal250.png)
+
+### 最小生成树小结 ###
+
+算法|空间|时间
+---|---|---
+[延时Prim算法](LazyPrimMST.java)|E|ElogE
+[即时Prim算法](PrimMST.java)|V|ElogE
+[Kruskal](KruskalMST.java)|E|ElogE
+
+---
 
 ## 最短路径 ##
 
@@ -1146,9 +1182,54 @@ Dijkstra算法局限：1.非线性时间，2.权重不能为负数
 
 ---
 
-**小结**
+### 最短路径小结 ###
 
+最短路径算法的性能比较
 
+<table>
+
+<tr>
+<td rowspan=2>算法</td>
+<td rowspan=2>局限</td>
+<td colspan=2>路径长度的比较次数<br/>(增长数量级)</td>
+
+<td rowspan=2>所需空间</td>
+<td rowspan=2>优势</td>
+</tr>
+
+<tr>
+<td>一般情况</td>
+<td>最坏情况</td>
+</tr>
+
+<tr>
+<td>[Dijkstra算法(即时)(基于优先队列)](DijkstraSP.java)</td>
+<td>边的权重必须为正</td>
+<td>ElogV</td>
+<td>ElogV</td>
+<td>V</td>
+<td>最坏情况下仍有较好的性能</td>
+</tr>
+
+<tr>
+<td>拓扑排序</td>
+<td>只适用于无环加权有向图</td>
+<td>E+V</td>
+<td>E+V</td>
+<td>V</td>
+<td>是无环图中的最优算法</td>
+</tr>
+
+<tr>
+<td>[Bellman-Ford算法(基于队列)](BellmanFordSP.java)</td>
+<td>不能存在负权重环</td>
+<td>E+V</td>
+<td>VE</td>
+<td>V</td>
+<td>适用领域广泛</td>
+</tr>
+
+<table>
 
 
 
