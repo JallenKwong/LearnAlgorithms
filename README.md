@@ -3,7 +3,7 @@
 
 [1.基础](src/main/java/com/lun/algorithms4th/c1/fundamental)
 
-[2.排序](src/main/java/com/lun/algorithms4th/c2/sorting)
+# [2.排序](src/main/java/com/lun/algorithms4th/c2/sorting) #
 
 [3.查找](src/main/java/com/lun/algorithms4th/c3/searching)
 
