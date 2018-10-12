@@ -332,6 +332,399 @@ LSD思想 若字符串长度均为W，那就从右向左以每个位置的字符
 
 ## 单词查找树 ##
 
+接下来算法在应用场景中(甚至对于巨型符号列表)都能够取得以下性能
+
+- 查找命中所需的时间与被查找的键的长度成正比
+- 查找未命中只需检查若干个字符
+
+性能惊人
+
+以字符串为键的符号表的API
+
+StringST<Value>|-|-
+---|---|---
+-|StringST()|create a symbol table
+void|put(String key, Value val)|put key-value pair into the table(remove key if value is null)
+Value|get(String key)|value paired with key(null if key is absent)
+void|delete(String key)|remove key (and its value)
+boolean|contains(String key)|is there a value paired with key?
+boolean|isEmpty()|is the table empty?
+String|longestPrefixOf(String s)|the longest key that is a prefx of s
+Iterable<String>|keysWithPrefix(String s)|all the keys having s as a prefx
+Iterable<String>|keysThatMatch(String s)|all the keys that match s(where . matches any character)
+int|size()|number of key-value pairs
+Iterable<String>|keys()|all the keys in the table
+
+### 单词查找树 ###
+
+单词查找树Trie/音try/
+
+![](image/Anatomy-of-a-trie.png)
+
+**值为空的结点在符号表中没有对应的键，它们的存在是为了简化单词查找操作**
+
+---
+
+**单词查找树中的查找操作**
+
+![](image/Trie-search-examples.png)
+
+---
+
+**单词查找树中的插入操作**
+
+![](image/Trie-construction-trace-for-standard-indexing-client.png)
+
+---
+
+**结点的表示**
+
+将空链接考虑进来将会突出单词查找树以下重要性质
+
+- 每个结点都含有R个链接，对应着每个可能出现的字符
+- 字符和键均隐式地保存在查询数据结构中
+
+![](image/Trie-representation.png)
+
+
+---
+
+**大小**
+
+- 即使实现(通过实例变量N,put()时就N++,delete()就N--)
+- 延迟实现
+
+
+	public int size(){
+		return size(root); 
+	}
+	
+	private int size(Node x){
+		if (x == null) return 0;
+		
+		int cnt = 0;
+		
+		if (x.val != null) 
+			cnt++;
+		
+		for (char c = 0; c < R; c++)
+			cnt += size(next[c]);
+		return cnt;
+	}
+
+[基于单词查找树的符号表](TrieST.java)
+
+---
+
+**查找所有键**
+
+![收集一棵单词查找树中的所有键的轨迹](image/the-trace-Collecting-the-keys-in-a-trie.png)
+
+    public Iterable<String> keys() {
+        return keysWithPrefix("");
+    }
+
+    public Iterable<String> keysWithPrefix(String prefix) {
+        Queue<String> results = new Queue<String>();
+        Node x = get(root, prefix, 0);
+        collect(x, new StringBuilder(prefix), results);
+        return results;
+    }
+
+    private void collect(Node x, StringBuilder prefix, Queue<String> results) {
+        if (x == null) return;
+        if (x.val != null) results.enqueue(prefix.toString());
+        for (char c = 0; c < R; c++) {
+            prefix.append(c);
+            collect(x.next[c], prefix, results);
+            prefix.deleteCharAt(prefix.length() - 1);
+        }
+    }
+
+![单词查找树中的前缀匹配](image/Prefix-match-in-a-trie.png)
+
+---
+
+**通配符匹配**
+
+    public Iterable<String> keysThatMatch(String pattern) {
+        Queue<String> results = new Queue<String>();
+        collect(root, new StringBuilder(), pattern, results);
+        return results;
+    }
+
+    private void collect(Node x, StringBuilder prefix, String pattern, Queue<String> results) {
+        if (x == null) return;
+        int d = prefix.length();
+        if (d == pattern.length() && x.val != null)
+            results.enqueue(prefix.toString());
+        if (d == pattern.length())
+            return;
+        char c = pattern.charAt(d);
+        if (c == '.') {
+            for (char ch = 0; ch < R; ch++) {
+                prefix.append(ch);
+                collect(x.next[ch], prefix, pattern, results);
+                prefix.deleteCharAt(prefix.length() - 1);
+            }
+        }
+        else {
+            prefix.append(c);
+            collect(x.next[c], prefix, pattern, results);
+            prefix.deleteCharAt(prefix.length() - 1);
+        }
+    }
+
+---
+
+**最长前缀**
+
+    public String longestPrefixOf(String query) {
+        if (query == null) throw new IllegalArgumentException("argument to longestPrefixOf() is null");
+        int length = longestPrefixOf(root, query, 0, -1);
+        if (length == -1) return null;
+        else return query.substring(0, length);
+    }
+
+    private int longestPrefixOf(Node x, String query, int d, int length) {
+        if (x == null) return length;
+        if (x.val != null) length = d;
+        if (d == query.length()) return length;
+        char c = query.charAt(d);
+        return longestPrefixOf(x.next[c], query, d+1, length);
+    }
+
+![](image/Possibilities-for-longestPrefixOf.png)
+
+---
+
+**删除操作**
+
+![](image/Deleting-a-key-from-a-trie.png)
+
+    public void delete(String key) {
+        if (key == null) throw new IllegalArgumentException("argument to delete() is null");
+        root = delete(root, key, 0);
+    }
+
+    private Node delete(Node x, String key, int d) {
+        if (x == null) return null;
+        if (d == key.length()) {
+            if (x.val != null) n--;
+            x.val = null;
+        }
+        else {
+            char c = key.charAt(d);
+            x.next[c] = delete(x.next[c], key, d+1);
+        }
+
+        // remove subtrie rooted at x if it is completely empty
+        if (x.val != null) return x;
+        for (int c = 0; c < R; c++)
+            if (x.next[c] != null)
+                return x;
+        return null;
+    }
+
+### 单词查找树的性质 ###
+
+>**命题F** 单词查找树的链表结构(形状)和键的插入或删除顺序无关的：对任意给定的一组键，其单词查找树都是唯一的。
+
+>**命题G** 在单词查找树中查找一个键或是插入一个键时，访问数组的次数最多为键的长度 + 1
+
+>**命题H** 字母表大小为R，在一棵由N个随机键构造的单词查找树，未命中查找平均所需检查的结点数量为~logN/logR
+
+>**命题I** 一棵单词查找树的链接总数在RN到RNw之间，其中w为键的平均长度
+
+application|typical key|average length w|alphabet size R|links in trie built<br/>from 1 million keys
+---|---|---|---|---
+CA license plates|4PGC938|7|256|256 million
+account numbers|02400019992993299111|20|256<br/>10|4 billion<br/>256 million
+URLs|www.cs.princeton.edu|28|256|4 billion
+text processing|seashells|11|256|256 million
+proteins in <br/>genomic data|ACTGACTG|8|256<br/>4|256 million<br/>4 million
+
+
+根据上表，可得出一些经验性的规律
+
+- 当所有键均较短时，链接的总数接近于RN
+- 当所有键均较长时，链接的总数接近于RNw
+- 因此缩小R能够节省大量空间
+
+**不要用 单词查找树算法 处理来自于 大型字母表 的 大量长键**
+
+### 三向单词查找树 ###
+
+为了避免R向单词查找树过度空间消耗，三向单词查找树TST粉墨登场。
+
+TST中，每个结点都含有一个字符，三条连接和一个值。这三条连接分别对应着当前字母小于、等于和大于结点字母的所有键
+
+![](image/TST-representation-of-a-trie.png)
+
+![](image/TST-search-example.png)
+
+[基于三向单词查找树的符号表](TrieST.java)
+
+![](image/Trie-node-representations.png)
+
+### 三向单词查找树的性质 ###
+
+>**命题J** 由N个平均长度为w的字符串构造的三向单词查找树中的链接总数在3N到3Nw之间。
+
+>**命题K** 在一棵由N个随机字符串构造的三向单词查找树中，查找未命中平均需要比较字符~InN次。除~InN次外，一次插入或命中的查找会比较一次被查找键中的每个字符
+
+>**命题L** 由N个随机字符串构造的根结点进行R^t向分支且不含有外部单向分支的三向单词查找树中，一次插入或查找操作平均需要进行约InT-tInR次字符进行比较
+
+### 单词查找树小结 ###
+
+各种字符串查找算法的性能特点
+
+<table>
+
+<tr>
+
+<td rowspan=2>算法或数据结构</td>
+<td colspan=2>处理由大小为R的字母表构造的N个字符串(平均长度为w)的增长数量级</td>
+<td rowspan=2>优点</td>
+
+</tr>
+
+<tr>
+
+<td>未命中查找检查的字符数量</td>
+<td>内存使用</td>
+
+</tr>
+
+
+<tr>
+
+<td>二叉查找树BST</td>
+<td>c1(lgN)^2</td>
+<td>64N</td>
+<td>适用于随机排列的键</td>
+
+</tr>
+
+<tr>
+
+<td>红黑树</td>
+<td>c2(lgN)^2</td>
+<td>64N</td>
+<td>性能保证</td>
+
+</tr>
+
+<tr>
+
+<td>线性探测法</td>
+<td>w</td>
+<td>32N~128N</td>
+<td>内置类型 缓存散列值</td>
+
+</tr>
+
+<tr>
+
+<td>R向单词查找树</td>
+<td>logN/logR</td>
+<td>(8R+56)N~(8R+56)Nw</td>
+<td>适用于较短的键和较小字母表</td>
+
+</tr>
+
+<tr>
+
+<td>三向单词查找树</td>
+<td>1.39lgN</td>
+<td>64N~64Nw</td>
+<td>适用于非随机的键</td>
+
+</tr>
+
+</table>
+
+Java的系统排序方法**没有**使用了本节介绍的方法来查找String类型的键
+
+## 子字符串查找 ##
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
