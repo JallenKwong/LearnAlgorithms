@@ -6,7 +6,12 @@
 
 [2.单词查找树](#单词查找树)
 
+[单词查找树小结](#单词查找树小结)
+
+[3.子字符串查找](#)
+
 [](#)
+
 
 
 ---
@@ -648,58 +653,120 @@ Java的系统排序方法**没有**使用了本节介绍的方法来查找String
 
 ## 子字符串查找 ##
 
+给定一段长度为N的文本和长度为M的模式pattern字符串，在文本中找到一个和该模式相符的子字符串。
+
+![](image/substring-search.png)
+
+解决该问题的大部分算法都可以很容易扩展为找出文本中所有和该模式相符的子字符串、统计该模式在文本中的出现次数、或者找出上下文（和该模式相符的子字符串周围的文字）的算法。
+
+### 暴力子字符串查找算法 Brute Force Substring Search ###
 
 
+指针i跟踪文本text，指针j跟踪模式pattern
 
+	public static int search(String pat, String txt){
+		int M = pat.length();
+		int N = txt.length();
+		for (int i = 0; i <= N - M; i++){
+			int j;
+			for (j = 0; j < M; j++)
+				if (txt.charAt(i+j) != pat.charAt(j))
+					break;
+			if (j == M) return i; // found
+		}
+		return N; // not found
+	}
 
+>**命题M** 在最坏的情况下，暴力子字符串查找算法在长度为N的文本中查找长度为M的模式需要~NM次字符比较
 
+![](image/brute-force-substring-search.png)
 
+![最坏情况下的暴力子字符串查找算法](image/worse-case-brute-force-substring-search.png)
 
+**另一种实现(显示回退)**
 
+	public static int search(String pat, String txt)
+	{
+		int j, M = pat.length();
+		int i, N = txt.length();
+		for (i = 0, j = 0; i < N && j < M; i++) {
+			if (txt.charAt(i) == pat.charAt(j))
+				j++;
+			else { 
+				i -= j;
+				j = 0;
+			}
+		}
+		if (j == M) return i - M; // found
+		else return N; // not found
+	}
 
+### Knuth-Morris-Pratt子字符串查找算法 ###
 
+KMP发明的算法的基本思想是当出现不匹配时，就能知晓一部分的内容（因为在匹配失败之前它们已经和模式相匹配）。我们可以利用这些信息避免将指针回退到所有这些已知的字符之前。
 
+![](image/text-pointer-backup-in-substring-searching.png)
 
+![KMP算法模式指针回退](image/Pattern-backup-in-KMP-substring-search.png)
 
+	DFA 
+	
+	Deterministic Finite Automaton 
+	
+	确定性 有限（状态）自动机
 
+KMP算法(DFA模拟)
 
+	public int search(String txt){ // Simulate operation of DFA on txt.
+		int i, j, N = txt.length();
+		for (i = 0, j = 0; i < N && j < M; i++)
+			j = dfa[txt.charAt(i)][j];
+		if (j == M) 
+			return i - M; // found
+		else 
+			return N; // not found
+	}
 
+![](image/dfa.png)
 
+![](image/Trace-of-KMP-substring-search.png)
 
+---
 
+KMP算法的关键问题——构造DFA
 
+解决这个问题仍然是DFA本身
 
+Knuth、Morris和Pratt发明这种巧妙（但也相当复杂）的构造方式。
 
+当在字符匹配失败时，希望了解的是，若回退了文本指针并在右移一位之后重新扫描已知的文本字符，**DFA的状态会是什么**
 
+我们其实并不想回退，只是想将DFA重置到适当的状态，就好像已经回退过文本指针一样。
 
+![](image/DFA-simulations-to-compute.png)
 
+**DFA构造方法**
 
+	dfa[pat.charAt(0)][0] = 1;
+	for (int X = 0, j = 1; j < M; j++){ // Compute dfa[][j].
+		for (int c = 0; c < R; c++)
+			dfa[c][j] = dfa[c][X];
 
+		dfa[pat.charAt(j)][j] = j+1;
+		X = dfa[pat.charAt(j)][X];
+	}
 
+![](image/constructing-the-dfa-for-kmp.png)
 
+[Knuth-Morris-Pratt子字符串查找算法](KMP.java)
 
+>**命题N** 对于长度为M的模式字符串的长度为N的文本，KMP字符串查找算法访问的字符不会超过M+N个
 
+在实际应用中，它比暴力算法的速度优势并不明显，因为极少有应用程序需要重复性很高的文本查找重复性很高的模式。
 
+但该方法的一个优点是不需要在输入中回退。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### Boyer-Moore 字符串查找算法 ###
 
 
 
