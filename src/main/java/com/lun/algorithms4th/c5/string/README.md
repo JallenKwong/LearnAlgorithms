@@ -8,11 +8,13 @@
 
 [单词查找树小结](#单词查找树小结)
 
-[3.子字符串查找](#)
+[3.子字符串查找](#子字符串查找)
 
-[](#)
+[子字符串查找小结](#子字符串查找小结)
 
+[4.正则表达式]()
 
+[5.数据压缩]()
 
 ---
 
@@ -768,64 +770,190 @@ Knuth、Morris和Pratt发明这种巧妙（但也相当复杂）的构造方式�
 
 ### Boyer-Moore 字符串查找算法 ###
 
+从右向左扫描模式字符串的更有效的方法
+
+![从右向左的Boyer-Moore子字符串查找的启发式地处理不匹配的字符](image/Mismatched-character-heuristic-for-right-to-left-Boyer-Moore-substring-search.png)
+
+---
+
+right[]记录字母表中的每个字符在模式中出现的最靠右的地方（若字符在模式中不存在则表示为-1）
+
+这个值揭示了如果该字符出现在文本中且在查找时造成了一次匹配失败，应该向右跳跃多远。
+
+![Boyer-Moore跳跃表的计算](image/Boyer-Moore-skip-table-computation.png)
+
+---
+
+用一个索引i在**文本**中**从左向右**移动，用另一个索引j在**模式**中**从右向左**移动。内循环会检查正文和模式字符串在位置i是否一致。若从M-1到0的所有j，txt.charAt(i+j)都和pat.charAt(j)相等，那么就找到了一个匹配。否则，匹配失败，就会遇到三种情况。
+
+![启发式的处理不匹配的字符（不匹配的字符 不包含 在模式字符串中）](image/Mismatched-character-heuristic-mismatch-not-in-pattern.png)
+
+![启发式的处理不匹配的字符（不匹配的字符 包含 在模式字符串中）](image/Mismatched-character-heuristic-mismatch-in-pattern.png)
+
+>命题O 在一般情况下，对于长度为N的文本和长度为M的模式字符串，使用Boyer-Moore的子字符串查找算法通过启发式处理不匹配的字符需要~N/M次字符比较
+
+[Boyer-Moore字符串匹配算法（启发式地处理不匹配的字符）](BoyerMoore.java)
+
+### Rabin-Karp指纹字符串查找算法 ###
+
+它是基于**散列**的字符串查找算法。
+
+我们需要计算模式字符串的散列函数，然后用相同的散列函数计算文本中所有可能的M个字符的子字符串散列值并寻找匹配。
+
+如果找到了一个散列值和模式字符串相同的子字符串，那么再继续验证两者是否匹配。
+
+#### 基本思想 ####
+
+长度为M的字符串对应着一个R进制的M位数。
+
+为了用一张大小为Q的散列表保存这种类型的键，需要一个能够将R进制的M位数转换为一个[0,Q-1]之间的int值散列函数。
+
+**除留余数法**:将该数除以Q并取余。在实际应用中会使用一个随机的**素数Q**，在不溢出的情况下选择一个尽可能大的值。（因为并不需要这的需要一张散列表）。
+
+![](image/Basis-for-Rabin-Karp-substring-search.png)
+
+#### 计算散列函数 ####
+
+使用Horner方法，用于除留余数法计算散列值
+
+    // Compute hash for key[0..m-1]. 
+    private long hash(String key, int m) { 
+        long h = 0; 
+        for (int j = 0; j < m; j++) 
+            h = (R * h + key.charAt(j)) % q;
+        return h;
+    }
+
+![](image/Computing-the-hash-value-for-the-pattern-with-Horner-method.png)
+
+可用这方法计算文本中的子字符串散列值，但这样一来字符串查找算法的成本就将是对文本中的每个字符进行乘、加、取余计算成本之和。
+
+在最坏情况下这需要NM次操作，相对于暴力子字符串查找算法来说并没有任何改进。
+
+#### 关键思想 ####
+
+Rabin-Karp算法基础是对于所有位置i，高效计算文本中i+1位置的子字符串散列值。
+
+R表示几进制，![](image/ti.png)表示txt.charAt(i)，那么文本txt中起始于位置i的含有M个字符的子字符所对应的数即为：
+
+![](image/fomula.png)
+
+将模式字符串右移一位即等价于将![](image/xi.png)替换为：
+
+![](image/fomula2.png)
+
+关键一点在于不需要保存这些数的值，而只需要保存它们除以Q之后的余数。
+
+**取余操作的一个基本性质**是如果在每次算术操作之后都将结果除以Q并取余，这**等价于**完成了所有算术操作之后再将最后的结果除以Q并取余。
+
+这样Horner利用上述性质可在常数时间内，高效地不断向右一个一个移动。
+
+![](image/Key-computation-in-Rabin-Karp-substring-search.png)
+
+#### Rabin-Karp算法版本 ####
+
+- **Monte Carlo**版本 Q设为**任意大的一个值**，因为我们并不会真构造一张散列表而只是希望用模式字符串验证是否会产生冲突。我们取一个大于10^20的long型值，使得一个随机值的散列值与模式字符串冲突的概率小于10^-20。这是极小值，若它不够小，你可将这种方法运行两遍，这样概率将小于10^-40。
+
+- **Las Vegas**版本 找到散列值匹配的子字符串，然后逐个比较他们的字符。
 
 
+[Rabin-Karp指纹字符串查找算法Monte Carlo版本](RabinKarp.java)
 
+![](image/Rabin-Karp-substring-search-example.png)
 
+>命题P 使用**Monte Carloba**版本的Rabin-Karp子字符串查找算法的运行时间是**线性级别**的且**出错的概率极小**。使用**Las Vegas**版本的Rabin-Karp子字符串查找算法能够**保证正确性**且**性能及其接近线性级别**
 
+### 子字符串查找小结 ###
 
+<table>
 
+<thead>
+<tr>
+<td rowspan=2>算法</td>
+<td rowspan=2>版本</td>
+<td rowspan=2>操作指数</td>
+<td colspan=2>在文本中回退？</td>
+<td rowspan=2>正确性</td>
+<td rowspan=2>额外的空间需求</td>
+</tr>
+<tr>
+<td>最坏情况</td>
+<td>一般情况</td>
+</tr>
+</thead>
 
+<tr>
+<td>暴力算法brute force</td>
+<td>-</td>
+<td>MN</td>
+<td>1.1N</td>
+<td>Y</td>
+<td>Y</td>
+<td>1</td>
+</tr>
 
+<tr>
+<td rowspan=3>Knuth-Morris-Pratt</td>
+<td>完整的DFA</td>
+<td>2N</td>
+<td>1.1N</td>
+<td>N</td>
+<td>Y</td>
+<td>MR</td>
+</tr>
 
+<tr>
+<td>仅构造不匹配的状态转换</td>
+<td>3N</td>
+<td>1.1N</td>
+<td>N</td>
+<td>Y</td>
+<td>M</td>
+</tr>
 
+<tr>
+<td>完整版本</td>
+<td>3N</td>
+<td>N/M</td>
+<td>Y</td>
+<td>Y</td>
+<td>R</td>
+</tr>
 
+<tr>
+<td>Boyer-Moore</td>
+<td>启发式查找不匹配的字符</td>
+<td>MN</td>
+<td>N/M</td>
+<td>Y</td>
+<td>Y</td>
+<td>R</td>
+</tr>
 
+<tr>
+<td rowspan=2>Rabin-Karp†</td>
+<td>Monte Carlo</td>
+<td>7N</td>
+<td>7N</td>
+<td>N</td>
+<td>Y†</td>
+<td>1</td>
+</tr>
 
+<tr>
+<td>Las Vegas</td>
+<td>7N</td>
+<td>7N†</td>
+<td>Y</td>
+<td>Y</td>
+<td>1</td>
+</tr>
 
+</table>
 
+†概率保证，需要使用均匀和独立的散列函数
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## 正则表达式 ##
 
 
 
