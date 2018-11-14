@@ -12,9 +12,9 @@
 
 [子字符串查找小结](#子字符串查找小结)
 
-[4.正则表达式]()
+[4.正则表达式](#正则表达式)
 
-[5.数据压缩]()
+[5.数据压缩](#数据压缩)
 
 ---
 
@@ -1067,22 +1067,138 @@ Nondeterministic Finite Automata
 
 ## 数据压缩 ##
 
+压缩数据的原因主要有两点：节省保存信息所需空间和节省传输信息所需的时间。
+
+当你在处理数字图像、声音、电影和其他数据时，就已经在与数据压缩打交道了。
+
+压缩算法之所以能够节省空间，是因为大多数数据文件都有很大的冗余，例如：
+
+- 文本文件中有些字符序列的出现频率远高于其他字符串
+- 用来将图片编码的位图文件中可能有大片的同质区域
+- 保存数字图像、电影、声音等其他类似信号的文件都含有大量重复的模式
+
 ### 游戏规则 ###
+
+数据最终都是用二进制表示的。
+
+![](image/model.png)
+
+数据压缩模型有两部分组成
+
+- 压缩盒 能够将一个比特流B转化为压缩后的版本C(B)
+- 展开盒 能够将C(B)转化为B。
+
+若|B|表示为比特流中比特的数量的话，|C(B)|/|B|称为**压缩率**，这玩意越小越好
+
+这模型叫**无损压缩模型**——保证不丢失任何信息，即压缩和展开后的比特流必须和原始的比特流完全相同。
+
+对于某些类型文件（例如图像、视频、音乐）、压缩方法也是可接受的，此时解码器所产生的输出只是与原输入文件近似。
 
 
 ### 读写二进制规则 ###
 
+**读写二进制**
+
+[二进制输入](../../util/BinaryStdIn.java)
+
+[二进制输入测试](../../../../../../../test/java/com/lun/algorithms4th/util/BinaryStdInTest.java)
+
+[二进制输出](../../util/BinaryStdOut.java)
+
+[二进制输出测试](../../../../../../../test/java/com/lun/algorithms4th/util/BinaryStdOutTest.java)
+
+![](image/binary-io.png)
+
+---
+
+**二进制转储**
+
+[用0和1表示比特流](../../util/BinaryDump.java)
+
+[BinaryDumpTest](../../../../../../../test/java/com/lun/algorithms4th/util/BinaryDumpTest.java)
+
+[用十六进制数字表示的比特流](../../util/HexDump.java)
+
+[HexDumpTest](../../../../../../../test/java/com/lun/algorithms4th/util/HexDumpTest.java)
+
+[用Picture对象中的像素表示的比特流](../../util/PictureDump.java)
+
+[PictureDumpTest](../../../../../../../test/java/com/lun/algorithms4th/util/PictureTest.java)
+
+![](image/Four-ways-to-look-at-a-bitstream.png)
+
+---
+
+**ASCII编码**
+
+-|0|1|2|3|4|5|6|7|8|9|A|B|C|D|E|F
+-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-
+0|NUL|SOH|STX|ETX|EOT|ENQ|ACK|BEL|BS|HT|LF|VT|FF|CR|SO|SI
+1|DLE|DC1|DC2|DC3|DC4|NAK|SYN|ETB|CAN|EM|SUB|ESC|FS|GS|RS|US
+2|SP|!|"|#|$|%|&|‘|(|)|*|+|,|-|.|/
+3|0|1|2|3|4|5|6|7|8|9|:|;|<|=|>|?
+4|@|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O
+5|P|Q|R|S|T|U|V|W|X|Y|Z|[|\|]|^|_
+6|`|a|b|c|d|e|f|g|h|i|j|k|l|m|n|o
+7|p|q|r|s|t|u|v|w|x|y|z|{|&#124;|}|~|DEL
+
+4A表示J
 
 ### 局限 ###
+
+>命题S 不存在能够压缩任意比特流的算法。
+
+[RandomBits](RandomBits.java)
+
+[RandomBitsTest](../../../../../../../test/java/com/lun/algorithms4th/util/RandomBitsTest.java)
+
+最优数据压缩(找到能够产生给定字符串的最短程序)是一个**不可判定**的问题。
+
+这局限性所带来的实际影响要求无损压缩算法必须尽量利用被压缩的数据流中的**已知**结构。
+
+- 小规模的字母表
+- 较长的连续相同的位或字符
+- 频繁使用的字符
+- 较长的连续重复的位或字符
 
 
 ### 热身运动：基因组 ###
 
+生物学家用A、C、T和G来表示生物体DNA的四种碱基。
+
+压缩原理：将一个8位字符转换为一个双位编码。
+
+[碱基序列压缩解压算法](Genome.java)
+
+[GenomeTest](../../../../../../../test/java/com/lun/algorithms4th/c5/string/GenomeTest.java)
+
+![](image/genome.png)
 
 ### 游程编码 ###
 
+游程编码**Run-Length Encoding**利用一长串比特的冗余形式来压缩数据。
+
+例子：40位长的字符串
+
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1
+
+该字符串含有15个0，7个1，7个0，11个1（15，7，7，11）。所有比特字符串都是由交替出现的0和1组成的，因此只需要将游程的长度编码即可。在这例子，若用4位表示长度并以连续的0作为开头，那么可得到一个16位长的字符串(15 = 1111, then 7 = 0111, then 7 = 0111, then 11 = 1011)
+
+1 1 1 1 0 1 1 1 0 1 1 1 1 0 1 1
+
+压缩率为16/40 = 40%
+
+**游程编码示例——位图**
+
+![](image/bitmap.png)
+
+[游程编码压缩和扩展](RunLength.java)
+
+[RunLengthTest](../../../../../../../test/java/com/lun/algorithms4th/c5/string/RunLengthTest.java)
+
+![](image/runlength.png)
 
 ### 霍夫曼压缩 ###
 
-Huffman compression
+**Huffman compression**
 
