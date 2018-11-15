@@ -1200,5 +1200,79 @@ Nondeterministic Finite Automata
 
 ### 霍夫曼压缩 ###
 
-**Huffman compression**
+**Huffman compression**的思想是**通过用较少的比特表示出现频繁的字符** 而 **用较多的比特表示偶尔出现的字符来节省空间**。
+
+试着将最短的比特字符串赋予最常用的字符，encoding A with 0,
+B with 1, R with 00, C with 01, D with 10, and ! with 11, so A B R A C A D A B R A ! would
+be encoded as 0 1 00 0 01 0 10 0 1 00 0 11.若无空格表示，则为
+
+0 1 0 0 0 0 1 0 1 0 0 1 0 0 0 1 1
+
+它也可以误解码为C R R D D C R C B 或其他
+
+**若所有字符编码都不会成为其他字符编码的前缀，那么就不需要分隔符**
+
+如A的编码0就是R的编码00的前缀
+
+#### 前缀码的单词查找树 ####
+
+表示前缀码的解码方式就是**使用单词查找树**
+
+![](image/prefix-free-codes.png)
+
+寻找最优前缀码的通用方法——**霍夫曼编码**
+
+#### 霍夫曼压缩的实现 ####
+
+将需要压缩的比特流看作8位编码的char值流并将它按照如下方法压缩：
+
+1. 读取输入
+2. 将输入中的每个char值的出现频率制成的表格
+3. 根据频率构造相应的**霍夫曼编码树**
+4. 构造 **编译表** ，将输入中的每个char值和一个比特字符串相关联
+5. 将 **单词查找树**（霍夫曼编码树） 编码为比特字符串并写入输出流
+6. 将 **单词总数** 编码为 比特字符串并写入输出流
+7. 使用编译表翻译每个输入字符
+
+---
+
+展开一条编码过的比特流，步骤如下：
+
+1. 读取单词查找树（编码在比特流的开头）
+2. 读取需要解码的字符数量
+3. 使用单词查找树将比特流解码
+
+#### 构造一棵霍夫曼编码单词查找树 ####
+
+![](image/Constructing-a-Huffman-encoding-trie.png)
+
+![](image/Constructing-a-Huffman-encoding-trie2.png)
+
+#### 最优性 ####
+
+>**命题T** 对于任意前缀码，编码后的比特字符串的长度等于相应单词查找树的加权外部路径的长度
+
+>**命题U** 给定的一个含有r个符号的集合和他们的频率，霍夫曼算法构造的前缀码是最优的。
+
+#### 写入和读取单词查找树 ####
+
+基于单词查找树的**前序遍历**
+
+![](image/Using-preorder-traversal-to-encode-a-trie-as-a-bitstream.png)
+
+---
+
+[霍夫曼压缩](Huffman.java)
+
+[HuffmanTest](../../../../../../../test/java/com/lun/algorithms4th/c5/string/HuffmanTest.java)
+
+![霍夫曼压缩测试用例](image/huffman-test-case.png)
+
+![霍夫曼-游程-基因对比](image/huffman-genome-runlength.png)
+
+#### LZW压缩算法 ####
+
+
+
+
 
