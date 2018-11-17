@@ -9,7 +9,7 @@
 
 # [4.图](src/main/java/com/lun/algorithms4th/c4/graph) #
 
-[5.字符串](src/main/java/com/lun/algorithms4th/c5/string)
+# [5.字符串](src/main/java/com/lun/algorithms4th/c5/string) #
 
 [6.背景](src/main/java/com/lun/algorithms4th/c6/context)
 
