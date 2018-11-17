@@ -75,6 +75,8 @@
 
 ## [5.字符串](src/main/java/com/lun/algorithms4th/c5/string) ##
 
+<a href=""></a>
+
 <table>
 
 <tr>
@@ -85,8 +87,8 @@
 
 <tr>
 <td>1</td>
-<td>[低位优先字符串排序](src/main/java/com/lun/algorithms4th/c5/string/LSD.java)</td>
-<td>[Link](src/main/java/com/lun/algorithms4th/c5/string/README.md#低位优先的字符串排序)</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/LSD.java">低位优先字符串排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/README.md#低位优先的字符串排序">Link</a></td>
 </tr>
 
 <tr>
