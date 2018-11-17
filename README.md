@@ -13,7 +13,7 @@
 
 <tr>
 <td></td>
-<td>[]()</td>
+<td><a href=""></a></td>
 <td></td>
 </tr>
 
@@ -31,7 +31,7 @@
 
 <tr>
 <td></td>
-<td>[]()</td>
+<td><a href=""></a></td>
 <td></td>
 </tr>
 
@@ -49,7 +49,7 @@
 
 <tr>
 <td></td>
-<td>[]()</td>
+<td><a href=""></a></td>
 <td></td>
 </tr>
 
@@ -67,7 +67,7 @@
 
 <tr>
 <td></td>
-<td>[]()</td>
+<td><a href=""></a></td>
 <td></td>
 </tr>
 
@@ -75,7 +75,7 @@
 
 ## [5.字符串](src/main/java/com/lun/algorithms4th/c5/string) ##
 
-<a href=""></a>
+
 
 <table>
 
@@ -88,67 +88,67 @@
 <tr>
 <td>1</td>
 <td><a href="src/main/java/com/lun/algorithms4th/c5/string/LSD.java">低位优先字符串排序</a></td>
-<td><a href="src/main/java/com/lun/algorithms4th/c5/string/README.md#低位优先的字符串排序">Link</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#低位优先的字符串排序">Link</a></td>
 </tr>
 
 <tr>
 <td>2</td>
-<td>[高位优先字符串排序](src/main/java/com/lun/algorithms4th/c5/string/MSD.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/MSD.java">高位优先字符串排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#高位优先的字符串排序">Link</a></td>
 </tr>
 
 <tr>
 <td>3</td>
-<td>[三向字符串快速排序](src/main/java/com/lun/algorithms4th/c5/string/Quick3string.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/Quick3string.java">三向字符串快速排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#三向字符串快速排序">Link</a></td>
 </tr>
 
 <tr>
 <td>4</td>
-<td>[基于单词查找树符号表](src/main/java/com/lun/algorithms4th/c5/string/TrieST.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/TrieST.java">基于单词查找树符号表</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#单词查找树-1">Link</a></td>
 </tr>
 
 <tr>
 <td>5</td>
-<td>[基于三向单词查找树的符号表](src/main/java/com/lun/algorithms4th/c5/string/TST.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/TST.java">基于三向单词查找树的符号表</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#三向单词查找树">Link</a></td>
 </tr>
 
 <tr>
 <td>6</td>
-<td>[Knuth-Morris-Pratt字符串查找算法](src/main/java/com/lun/algorithms4th/c5/string/KMP.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/KMP.java">Knuth-Morris-Pratt字符串查找算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#knuth-morris-pratt子字符串查找算法">Link</a></td>
 </tr>
 
 <tr>
 <td>7</td>
-<td>[Boyer-Moore字符串匹配算法](src/main/java/com/lun/algorithms4th/c5/string/BoyerMoore.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/BoyerMoore.java">Boyer-Moore字符串匹配算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#boyer-moore-字符串查找算法">Link</a></td>
 </tr>
 
 <tr>
 <td>8</td>
-<td>[Rabin-Karp指纹字符串查找算法](src/main/java/com/lun/algorithms4th/c5/string/RabinKarp.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/RabinKarp.java">Rabin-Karp指纹字符串查找算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#rabin-karp指纹字符串查找算法">Link</a></td>
 </tr>
 
 <tr>
 <td>9</td>
-<td>[正则表达式的模式匹配](src/main/java/com/lun/algorithms4th/c5/string/NFA.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/NFA.java">正则表达式的模式匹配</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#正则表达式">Link</a></td>
 </tr>
 
 <tr>
 <td>10</td>
-<td>[霍夫曼压缩](src/main/java/com/lun/algorithms4th/c5/string/Huffman.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/Huffman.java">霍夫曼压缩</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#霍夫曼压缩">Link</a></td>
 </tr>
 
 <tr>
 <td>11</td>
-<td>[Lempel-Ziv-Welch压缩](src/main/java/com/lun/algorithms4th/c5/string/LZW.java)</td>
-<td></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string/LZW.java">Lempel-Ziv-Welch压缩</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c5/string#lzw压缩算法">Link</a></td>
 </tr>
 
 </table>
@@ -166,7 +166,7 @@
 
 <tr>
 <td></td>
-<td>[]()</td>
+<td><a href=""></a></td>
 <td></td>
 </tr>
 
