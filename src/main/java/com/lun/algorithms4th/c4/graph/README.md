@@ -391,7 +391,7 @@ DFS|BFS
 
 **多点可达性** 是否存在一条从集合中的任意顶点到达给定顶点v的有向路径
 
-使用DFS解决这问题
+[使用DFS解决这问题](src/main/java/com/lun/algorithms4th/c4/graph/DirectedDFS.java)
 
 >**命题D 有向图中，深度优先搜索标记由一个集合的顶点可达的所有顶点所需的事件与被标记得所有 顶点的出度 之和成正比**
 
@@ -427,7 +427,9 @@ DFS|BFS
 
 ![](image/scheduling2.png)
 
-	优先级限制下的调度问题等价于**拓扑排序**
+**优先级限制下的调度问题等价于拓扑排序**
+
+#### 拓扑排序 ####
 
 **拓扑排序**。给定一幅有向图，将所有的顶点排序，使得所有的有向边均从排在前面的元素指向排在后面的元素（或者说明无法做到这一点）
 
@@ -949,7 +951,9 @@ Kruskal算法的实现并不困难：我们将会使用一条优先队列来按�
 
 >对于任意从s可达的顶点w，在进行这些操作之后，distTo[w]的值即为从s到w的最短路径的长度（且edgeTo[w]的值即为该路径上的最后一条边）。
 
-### Dijkstra（音 Die si zhua）算法 ###
+### Dijkstra算法 ###
+
+Dijkstra /音 Die si zhua/
 
 >**命题R** Dijkstra算法能够解决边权重非负的加权有向图的单起点最短路径问题
 
@@ -1090,7 +1094,7 @@ Dijkstra算法局限：1.非线性时间，2.权重不能为负数
 - 一条用来保存即将被放松的顶点的队列queue
 - 一个由顶点索引的boolean数组onQ[]，用来指示顶点是否已经存在于队列中，以防止将顶点重复插入队列
 
-
+---
 
     // relax vertex v and put other endpoints on queue if changed
     private void relax(EdgeWeightedDigraph G, int v) {

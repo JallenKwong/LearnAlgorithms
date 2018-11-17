@@ -1,5 +1,6 @@
-
 # Algorithms 4th #
+
+>As usual, one good way to understand an algorithm is to trace its behavior on a small example. —— *Algorithms 4th*
 
 [1.基础](src/main/java/com/lun/algorithms4th/c1/fundamental)
 
@@ -66,16 +67,74 @@
 </tr>
 
 <tr>
-<td></td>
-<td><a href=""></a></td>
-<td></td>
+<td>1</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/DepthFirstPaths.java">使用DFS查找图中路径</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#寻找路径如是否存在从s到v的路径使用dfs思想">Link</a></td>
+</tr>
+
+<tr>
+<td>2</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/BreadthFirstPaths.java">使用BFS查找图中路径</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#广度优先搜索bfsbreadthfirstpath">Link</a></td>
+</tr>
+
+<tr>
+<td>3</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/ConnectedComponents.java">使用BFS找出图中所有连通分量</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#连通分量">Link</a></td>
+</tr>
+
+<tr>
+<td>4</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/DirectedDFS.java">有向图的可达性</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#有向图的可达性">Link</a></td>
+</tr>
+
+<tr>
+<td>5</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/Topological.java">拓扑排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#拓扑排序">Link</a></td>
+</tr>
+
+<tr>
+<td>6</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/KosarajuSharirSCC.java">Kosaraju计算强连通分量算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#有向图中强连通性">Link</a></td>
+</tr>
+
+<tr>
+<td>7</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/PrimMST.java">Prim最小生成树算法（即时实现）</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#prim算法的即时实现">Link</a></td>
+</tr>
+
+<tr>
+<td>8</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/KruskalMST.java">Kruskal最小生成树算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#kruskal算法">Link</a></td>
+</tr>
+
+<tr>
+<td>9</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/DijkstraSP.java">Dijkstra最短路径算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#dijkstra算法">Link</a></td>
+</tr>
+
+<tr>
+<td>10</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/AcyclicSP.java">无环加权有向图的最短路径算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#无环加权有向图的最短路径算法">Link</a></td>
+</tr>
+
+<tr>
+<td>11</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph/BellmanFordSP.java">基于队列的Bellman-Ford最短路径算法</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c4/graph#一般加权有向图中的最短路径问题 ">Link</a></td>
 </tr>
 
 </table>
 
 ## [5.字符串](src/main/java/com/lun/algorithms4th/c5/string) ##
-
-
 
 <table>
 
