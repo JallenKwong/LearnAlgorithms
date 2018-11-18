@@ -1,3 +1,4 @@
+# 查找 #
 
 [顺序查找(基于无序链表)](#)
 
@@ -16,52 +17,59 @@
 > 符号表是一种存储键值对的数据结构，支持两种操作：插入(put)，即将一组新的键值对存入表中；查找(get)，即根据给定的键得到相应的值。
 
 <table>
-	<thead>
-		<tr>
-			<td>应用</td>
-			<td>查找的目的</td>
-			<td>键</td>
-			<td>值</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>字典</td>
-			<td>找出单词的解释</td>
-			<td>单词</td>
-			<td>释义</td>
-		</tr>
-		<tr>
-			<td>图书索引</td>
-			<td>找出相关页码</td>
-			<td>术语</td>
-			<td>一串页码</td>
-		</tr>
-		<tr>
-			<td>文件共享</td>
-			<td>找到歌曲的下载地址</td>
-			<td>歌曲名</td>
-			<td>计算机ID</td>
-		</tr>
-		<tr>
-			<td>账户管理</td>
-			<td>处理交易</td>
-			<td>账户号码</td>
-			<td>交易详情</td>
-		</tr>
-		<tr>
-			<td>网络搜索</td>
-			<td>找出相关网页</td>
-			<td>关键字</td>
-			<td>网页名称</td>
-		</tr>
-		<tr>
-			<td>编译器</td>
-			<td>找出符号的类型和值</td>
-			<td>变量名</td>
-			<td>类型和值</td>
-		</tr>
-	</tbody>
+
+<thead>
+<tr>
+<td>应用</td>
+<td>查找的目的</td>
+<td>键</td>
+<td>值</td>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>字典</td>
+<td>找出单词的解释</td>
+<td>单词</td>
+<td>释义</td>
+</tr>
+
+<tr>
+<td>图书索引</td>
+<td>找出相关页码</td>
+<td>术语</td>
+<td>一串页码</td>
+</tr>
+
+<tr>
+<td>文件共享</td>
+<td>找到歌曲的下载地址</td>
+<td>歌曲名</td>
+<td>计算机ID</td>
+</tr>
+
+<tr>
+<td>账户管理</td>
+<td>处理交易</td>
+<td>账户号码</td>
+<td>交易详情</td>
+</tr>
+
+<tr>
+<td>网络搜索</td>
+<td>找出相关网页</td>
+<td>关键字</td>
+<td>网页名称</td>
+</tr>
+
+<tr>
+<td>编译器</td>
+<td>找出符号的类型和值</td>
+<td>变量名</td>
+<td>类型和值</td>
+</tr>
+</tbody>
 </table>
 
 **顺序查找(基于无序链表)**
@@ -946,10 +954,7 @@ deleteMax()与deleteMax()类似，关键deleteMax(x.right)
 具有2-3树性质的平衡二叉树，这样可以复用平衡二叉树的代码。
 
 
-
-
-散列表
----
+## 散列表 ##
 
 特殊数组——用算数操作将键转化为数组索引来访问数组中的键值对。
 
@@ -973,106 +978,7 @@ deleteMax()与deleteMax()类似，关键deleteMax(x.right)
 
 拉链法——将大小为M的数组的每个元素指向一条链表，链表中的每个结点都存储了散列值为该元素的索引的键值对，发生冲突的元素都被存储在链表中
 
-	public class SeparateChainingHashST<Key, Value>{
-		private static final int INIT_CAPACITY = 4;
-
-		private int numOfKvPairs;
-		private int tableSize;
-		private SequentialSearchST<Key, Value>[] st;// array of linked-list symbol tables一个链表数组
-
-		//初始化 基于 拉链法的散列表
-		public SeparateChainingHashST() {
-			this(INIT_CAPACITY);
-		}
-
-		public SeparateChainingHashST(int tableSize) {
-			this.tableSize = tableSize;
-			st = (SequentialSearchST<Key, Value>[]) new SequentialSearchST[tableSize];
-			for (int i = 0; i < tableSize; i++)
-				st[i] = new SequentialSearchST<Key, Value>();
-		} 
-
-		//重新分配数组大小
-		private void resize(int chains) {
-			SeparateChainingHashST<Key, Value> temp = new SeparateChainingHashST<Key, Value>(chains);
-			//重新插入
-			for (int i = 0; i < tableSize; i++) {
-				for (Key key : st[i].keys()) {
-					temp.put(key, st[i].get(key));
-				}
-			}
-			this.tableSize = temp.tableSize;
-			this.numOfKvPairs = temp.numOfKvPairs;
-			this.st = temp.st;
-		}
-
-		private int hash(Key key) {
-			return (key.hashCode() & 0x7fffffff) % tableSize;
-		}
-		
-		public int size() {
-			return numOfKvPairs;
-		}
-
-		public boolean isEmpty() {
-			return size() == 0;
-		}
-
-		public boolean contains(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("argument to contains() is null");
-			return get(key) != null;
-		}
-		 
-		public Value get(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("argument to get() is null");
-			int i = hash(key);
-			return st[i].get(key);
-		}
-
-		public void put(Key key, Value val) {
-			if (key == null)
-				throw new IllegalArgumentException("first argument to put() is null");
-			if (val == null) {
-				delete(key);
-				return;
-			}
-	
-			// double table size if average length of list >= 10
-			if (numOfKvPairs >= 10 * tableSize)
-				resize(2 * tableSize);
-	
-			int i = hash(key);
-			if (!st[i].contains(key))
-				numOfKvPairs++;
-			st[i].put(key, val);
-		}
-
-		public void delete(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("argument to delete() is null");
-	
-			int i = hash(key);
-			if (st[i].contains(key))
-				numOfKvPairs--;
-			st[i].delete(key);
-	
-			// halve table size if average length of list <= 2
-			if (tableSize > INIT_CAPACITY && numOfKvPairs <= 2 * tableSize)
-				resize(tableSize / 2);
-		}
-
-		// return keys in symbol table as an Iterable
-		public Iterable<Key> keys() {
-			LinkedList<Key> queue = new LinkedList<Key>();
-			for (int i = 0; i < tableSize; i++) {
-				for (Key key : st[i].keys())
-					queue.add(key);
-			}
-			return queue;
-		}
-	}
+[基于拉链法的散列表](SeparateChainingHashST.java)
 
 **命题K 在一张含有M条链表和N个键的散列表中，（在假设J成立的前提下）任意一条链表中的键的数量（链长）均在N/M的常数因子范围内的概率（N/M > 0）**
 
@@ -1109,153 +1015,7 @@ deleteMax()与deleteMax()类似，关键deleteMax(x.right)
 
 用散列函数找到键在数组中的索引，检查其中的键和被查找的键是否相同。如果不同则继续查找（将索引增大，到达数组结尾时折回数组的开头）直到找到该键或者遇到一个空元素。
 
-
-	public class LinearProbingHashST<Key, Value> {
-		private static final int INIT_CAPACITY = 4;
-	
-		private int numOfKvPairs; // number of key-value pairs in the symbol table
-		private int tableSize; // size of linear probing table
-		private Key[] keys; // the keys
-		private Value[] vals; // the values
-
-		public LinearProbingHashST() {
-			this(INIT_CAPACITY);
-		}
-	
-		@SuppressWarnings("unchecked")
-		public LinearProbingHashST(int capacity) {
-			tableSize = capacity;
-			numOfKvPairs = 0;
-			keys = (Key[]) new Object[tableSize];
-			vals = (Value[]) new Object[tableSize];
-		}
-	
-		public int size() {
-			return numOfKvPairs;
-		}
-	
-		public boolean isEmpty() {
-			return size() == 0;
-		}
-	
-		public boolean contains(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("argument to contains() is null");
-			return get(key) != null;
-		}
-	
-		private void resize(int capacity) {
-			LinearProbingHashST<Key, Value> temp = new LinearProbingHashST<Key, Value>(capacity);
-			for (int i = 0; i < tableSize; i++) {
-				if (keys[i] != null) {
-					temp.put(keys[i], vals[i]);
-				}
-			}
-			keys = temp.keys;
-			vals = temp.vals;
-			tableSize = temp.tableSize;
-		}
-	
-		public void put(Key key, Value val) {
-			if (key == null)
-				throw new IllegalArgumentException("first argument to put() is null");
-	
-			if (val == null) {
-				delete(key);
-				return;
-			}
-	
-			// double table size if 50% full
-			if (numOfKvPairs >= tableSize / 2)
-				resize(2 * tableSize);
-	
-			int i;
-			for (i = hash(key); keys[i] != null; i = (i + 1) % tableSize) {
-				if (keys[i].equals(key)) {
-					vals[i] = val;
-					return;
-				}
-			}
-			keys[i] = key;
-			vals[i] = val;
-			numOfKvPairs++;
-		}
-	
-		public Value get(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("argument to get() is null");
-			for (int i = hash(key); keys[i] != null; i = (i + 1) % tableSize)
-				if (keys[i].equals(key))
-					return vals[i];
-			return null;
-		}
-	
-		public void delete(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("argument to delete() is null");
-			if (!contains(key))
-				return;
-	
-			// find position i of key
-			int i = hash(key);
-			while (!key.equals(keys[i])) {
-				i = (i + 1) % tableSize;
-			}
-	
-			// delete key and associated value
-			keys[i] = null;
-			vals[i] = null;
-	
-			// rehash all keys in same cluster
-			i = (i + 1) % tableSize;
-			while (keys[i] != null) {
-				// delete keys[i] an vals[i] and reinsert
-				Key keyToRehash = keys[i];
-				Value valToRehash = vals[i];
-				keys[i] = null;
-				vals[i] = null;
-				numOfKvPairs--;
-				put(keyToRehash, valToRehash);
-				i = (i + 1) % tableSize;
-			}
-	
-			numOfKvPairs--;
-	
-			// halves size of array if it's 12.5% full or less
-			if (numOfKvPairs > 0 && numOfKvPairs <= tableSize / 8)
-				resize(tableSize / 2);
-	
-			assert check();
-		}
-	
-		public Iterable<Key> keys() {
-			LinkedList<Key> queue = new LinkedList<Key>();
-			for (int i = 0; i < tableSize; i++)
-				if (keys[i] != null)
-					queue.add(keys[i]);
-			return queue;
-		}
-	
-		private boolean check() {
-	
-			// check that hash table is at most 50% full
-			if (tableSize < 2 * numOfKvPairs) {
-				System.err.println("Hash table size m = " + tableSize + "; array size n = " + numOfKvPairs);
-				return false;
-			}
-	
-			// check that each key in table can be found by get()
-			for (int i = 0; i < tableSize; i++) {
-				if (keys[i] == null)
-					continue;
-				else if (get(keys[i]) != vals[i]) {
-					System.err.println("get[" + keys[i] + "] = " + get(keys[i]) + "; vals[i] = " + vals[i]);
-					return false;
-				}
-			}
-			return true;
-		}
-	}
+[基于线性探测法的散列表](LinearProbingHashST.java)
 
 线性探测的平均成本取决于元素在插入数组后聚集成的一组连接条目，也叫做 **键簇**
 
@@ -1286,84 +1046,84 @@ M为 散列表的大小
 4. 难以支持有序性相关的符号表操作
 
 
-应用
----
+## 应用 ##
+
+**各种符号表实现的渐进性能的总结**
 
 <table>
 
-	<tr>
-		<td rowspan=2>算法（数据结构）</td>
-		<td colspan=2>最坏情况下的运行时间的增长数量级（N次插入后）</td>
-		<td colspan=2>平均情况下的运行时间的增长数量级（N次插入后）</td>
-		<td rowspan=2>关键接口</td>
-		<td rowspan=2>内存使用（字节）</td>
-	</tr>
-	<tr>
-		<td>查找</td>
-		<td>插入</td>
-		<td>查找</td>
-		<td>插入</td>
-	</tr>
+<tr>
+<td rowspan=2>算法（数据结构）</td>
+<td colspan=2>最坏情况下的运行时间的增长数量级（N次插入后）</td>
+<td colspan=2>平均情况下的运行时间的增长数量级（N次插入后）</td>
+<td rowspan=2>关键接口</td>
+<td rowspan=2>内存使用（字节）</td>
+</tr>
 
-</table>
+<tr>
+<td>查找</td>
+<td>插入</td>
+<td>查找</td>
+<td>插入</td>
+</tr>
 
-<table>
+<tr>
+<td>顺序查询（无序链表）</td>
+<td>N</td>
+<td>N</td>
+<td>N/2</td>
+<td>N</td>
+<td>equals()</td>
+<td>48N</td>
+</tr>
 
-	<tr>
-		<td>顺序查询（无序链表）</td>
-		<td>N</td>
-		<td>N</td>
-		<td>N/2</td>
-		<td>N</td>
-		<td>equals()</td>
-		<td>48N</td>
-	</tr>
-	<tr>
-		<td>二分查找（有序数组）</td>
-		<td>lgN</td>
-		<td>N</td>
-		<td>lgN</td>
-		<td>N/2</td>
-		<td rowspan=3>compareTo()</td>
-		<td>16N</td>
-	</tr>
-	<tr>
-		<td>二叉树查找（二叉查找树）</td>
-		<td>N</td>
-		<td>N</td>
-		<td>1.39lgN</td>
-		<td>1.39lgN</td>
-		<td>64N</td>
-	</tr>
-	<tr>
-		<td>2-3树查找（红黑树）</td>
-		<td>2lgN</td>
-		<td>2lgN</td>
-		<td>1.00lgN</td>
-		<td>1.00lgN</td>
-		<td>64N</td>
+<tr>
+<td>二分查找（有序数组）</td>
+<td>lgN</td>
+<td>N</td>
+<td>lgN</td>
+<td>N/2</td>
+<td rowspan=3>compareTo()</td>
+<td>16N</td>
+</tr>
 
-	</tr>
-	<tr>
-		<td>拉链法（链表数组）</td>
-		<td>&lt;lgN</td>
-		<td>&lt;lgN</td>
-		<td>N/(2M)</td>
-		<td>N/M</td>
-		<td rowspan=2>
-			equals() <br/>
-			hashCode()
-		</td>
-		<td>48N+32M</td>
-	</tr>
-	<tr>
-		<td>线性探测法（并行数组）</td>
-		<td>clgN</td>
-		<td>clgN</td>
-		<td>&lt;1.5</td>
-		<td>&lt;2.5</td>
-		<td>(32N, 128N)</td>
-	</tr>
+<tr>
+<td>二叉树查找（二叉查找树）</td>
+<td>N</td>
+<td>N</td>
+<td>1.39lgN</td>
+<td>1.39lgN</td>
+<td>64N</td>
+</tr>
+
+<tr>
+<td>2-3树查找（红黑树）</td>
+<td>2lgN</td>
+<td>2lgN</td>
+<td>1.00lgN</td>
+<td>1.00lgN</td>
+<td>64N</td>
+</tr>
+
+<tr>
+<td>拉链法（链表数组）</td>
+<td>&lt;lgN</td>
+<td>&lt;lgN</td>
+<td>N/(2M)</td>
+<td>N/M</td>
+<td rowspan=2>equals()<br/>hashCode()</td>
+<td>48N+32M</td>
+</tr>
+
+<tr>
+<td>线性探测法（并行数组）</td>
+<td>clgN</td>
+<td>clgN</td>
+<td>&lt;1.5</td>
+<td>&lt;2.5</td>
+<td>(32N, 128N)</td>
+</tr>
+
 </table>
 
 
@@ -1372,7 +1132,6 @@ M为 散列表的大小
 符号表的实现优势需要专门考虑重复键的可能性。许多应用都希望能够为同一个键绑定多个值。例如在一个交易处理系统中，多笔交易的客户属性都是相同。
 
 符号表不允许重复键，因此用例只能自己管理重复键。
-
 
 ### Java标准库 ###
 
@@ -1388,234 +1147,87 @@ Java的TreeMap,HashMap分别基于 红黑树的符号表 和 基于 拉链法的
 2. 黑名单 （防火墙）
 3. 白名单
 
----
+[SET集合](SET.java)
 
-	public class SET<Key extends Comparable<Key>> implements Iterable<Key> {
-		private TreeSet<Key> set;
-	
-		public SET() {
-			set = new TreeSet<Key>();
-		}
-	
-		public SET(SET<Key> x) {
-			set = new TreeSet<Key>(x.set);
-		}
-	
-		public void add(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("called add() with a null key");
-			set.add(key);
-		}
-	
-		public boolean contains(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("called contains() with a null key");
-			return set.contains(key);
-		}
-	
-		public void delete(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("called delete() with a null key");
-			set.remove(key);
-		}
-	
-		public int size() {
-			return set.size();
-		}
-	
-		public boolean isEmpty() {
-			return size() == 0;
-		}
-	
-		public Iterator<Key> iterator() {
-			return set.iterator();
-		}
-	
-		public Key max() {
-			if (isEmpty())
-				throw new NoSuchElementException("called max() with empty set");
-			return set.last();
-		}
-	
-		public Key min() {
-			if (isEmpty())
-				throw new NoSuchElementException("called min() with empty set");
-			return set.first();
-		}
-	
-		public Key ceiling(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("called ceiling() with a null key");
-			Key k = set.ceiling(key);
-			if (k == null)
-				throw new NoSuchElementException("all keys are less than " + key);
-			return k;
-		}
-	
-		public Key floor(Key key) {
-			if (key == null)
-				throw new IllegalArgumentException("called floor() with a null key");
-			Key k = set.floor(key);
-			if (k == null)
-				throw new NoSuchElementException("all keys are greater than " + key);
-			return k;
-		}
-	
-		public SET<Key> union(SET<Key> that) {
-			if (that == null)
-				throw new IllegalArgumentException("called union() with a null argument");
-			SET<Key> c = new SET<Key>();
-			for (Key x : this) {
-				c.add(x);
-			}
-			for (Key x : that) {
-				c.add(x);
-			}
-			return c;
-		}
-	
-		public SET<Key> intersects(SET<Key> that) {
-			if (that == null)
-				throw new IllegalArgumentException("called intersects() with a null argument");
-			SET<Key> c = new SET<Key>();
-			if (this.size() < that.size()) {
-				for (Key x : this) {
-					if (that.contains(x))
-						c.add(x);
-				}
-			} else {
-				for (Key x : that) {
-					if (this.contains(x))
-						c.add(x);
-				}
-			}
-			return c;
-		}
-	
-		@Override
-		public boolean equals(Object other) {
-			if (other == this)
-				return true;
-			if (other == null)
-				return false;
-			if (other.getClass() != this.getClass())
-				return false;
-			SET that = (SET) other;
-			return this.set.equals(that.set);
-		}
-		@Override
-		public int hashCode() {
-			throw new UnsupportedOperationException("hashCode() is not supported because sets are mutable");
-		}
-	
-		public String toString() {
-			String s = set.toString();
-			return "{ " + s.substring(1, s.length() - 1) + " }";
-		}
-	
-		public static void main(String[] args) {
-			SET<String> set = new SET<String>();
-			System.out.println("set = " + set);
-	
-			// insert some keys
-			set.add("www.cs.princeton.edu");
-			set.add("www.cs.princeton.edu"); // overwrite old value
-			set.add("www.princeton.edu");
-			set.add("www.math.princeton.edu");
-			set.add("www.yale.edu");
-			set.add("www.amazon.com");
-			set.add("www.simpsons.com");
-			set.add("www.stanford.edu");
-			set.add("www.google.com");
-			set.add("www.ibm.com");
-			set.add("www.apple.com");
-			set.add("www.slashdot.com");
-			set.add("www.whitehouse.gov");
-			set.add("www.espn.com");
-			set.add("www.snopes.com");
-			set.add("www.movies.com");
-			set.add("www.cnn.com");
-			set.add("www.iitb.ac.in");
-	
-			System.out.println(set.contains("www.cs.princeton.edu"));
-			System.out.println(!set.contains("www.harvardsucks.com"));
-			System.out.println(set.contains("www.simpsons.com"));
-			System.out.println();
-	
-			System.out.println("ceiling(www.simpsonr.com) = " + set.ceiling("www.simpsonr.com"));
-			System.out.println("ceiling(www.simpsons.com) = " + set.ceiling("www.simpsons.com"));
-			System.out.println("ceiling(www.simpsont.com) = " + set.ceiling("www.simpsont.com"));
-			System.out.println("floor(www.simpsonr.com)   = " + set.floor("www.simpsonr.com"));
-			System.out.println("floor(www.simpsons.com)   = " + set.floor("www.simpsons.com"));
-			System.out.println("floor(www.simpsont.com)   = " + set.floor("www.simpsont.com"));
-			System.out.println();
-	
-			System.out.println("set = " + set);
-			System.out.println();
-	
-			// print out all keys in this set in lexicographic order
-			for (String s : set) {
-				System.out.println(s);
-			}
-	
-			System.out.println();
-			SET<String> set2 = new SET<String>(set);
-			System.out.println(set.equals(set2));
-		}
-	
-	}
+[DeDup过滤器](DeDup.java)
+
+[DeDupTest](../../../../../../../test/java/com/lun/algorithms4th/c3/searching/DeDupTest.java)
+
+[白名单](WhiteFilter.java)
+
+[WhiteFilterTest](../../../../../../../test/java/com/lun/algorithms4th/c3/searching/WhiteFilterTest.java)
+
+[黑名单](BlackFilter.java)
+
+[BlackFilterTest](../../../../../../../test/java/com/lun/algorithms4th/c3/searching/BlackFilterTest.java)
+
+### 字典类用例 ###
 
 **典型的字典类的应用**
 
 <table>
-	<tr>
-		<td>应用领域</td>
-		<td>键Key</td>
-		<td>值Value</td>
-	</tr>
-	<tr>
-		<td>电话黄页</td>
-		<td>人名</td>
-		<td>电话号码</td>
-	</tr>
-	<tr>
-		<td>字典</td>
-		<td>单词</td>
-		<td>定义</td>
-	</tr>
-	<tr>
-		<td>银行账户</td>
-		<td>账号</td>
-		<td>余额</td>
-	</tr>
-	<tr>
-		<td>基因组</td>
-		<td>密码子</td>
-		<td>氨基酸</td>
-	</tr>
-	<tr>
-		<td>实验数据</td>
-		<td>数据/时间</td>
-		<td>实验结果</td>
-	</tr>
-	<tr>
-		<td>编译器</td>
-		<td>变量名</td>
-		<td>内存地址</td>
-	</tr>
-	<tr>
-		<td>文件共享</td>
-		<td>歌曲名</td>
-		<td>计算机</td>
-	</tr>
-	<tr>
-		<td>DNS</td>
-		<td>网站</td>
-		<td>IP地址</td>
-	</tr>
+<tr>
+<td>应用领域</td>
+<td>键Key</td>
+<td>值Value</td>
+</tr>
+
+<tr>
+<td>电话黄页</td>
+<td>人名</td>
+<td>电话号码</td>
+</tr>
+
+<tr>
+<td>字典</td>
+<td>单词</td>
+<td>定义</td>
+</tr>
+
+<tr>
+<td>银行账户</td>
+<td>账号</td>
+<td>余额</td>
+</tr>
+
+<tr>
+<td>基因组</td>
+<td>密码子</td>
+<td>氨基酸</td>
+</tr>
+
+<tr>
+<td>实验数据</td>
+<td>数据/时间</td>
+<td>实验结果</td>
+</tr>
+
+<tr>
+<td>编译器</td>
+<td>变量名</td>
+<td>内存地址</td>
+</tr>
+
+<tr>
+<td>文件共享</td>
+<td>歌曲名</td>
+<td>计算机</td>
+</tr>
+
+<tr>
+<td>DNS</td>
+<td>网站</td>
+<td>IP地址</td>
+</tr>
+
 </table>
 
-**索引类用例**
+[字典的查找](LookupCSV.java)
+
+[LookupCSVTest](../../../../../../../test/java/com/lun/algorithms4th/c3/searching/LookupCSVTest.java)
+
+
+### 索引类用例 ###
 
 字典的主要特点是每个键都有一个对应的值。
 
@@ -1624,191 +1236,95 @@ Java的TreeMap,HashMap分别基于 红黑树的符号表 和 基于 拉链法的
 **典型的索引类的引用**
 
 <table>
-	<tr>
-		<td>应用领域</td>
-		<td>键Key</td>
-		<td>值Value</td>
-	</tr>
-	<tr>
-		<td>基因组学</td>
-		<td>氨基酸</td>
-		<td>一系列密码子</td>
-	</tr>
-	<tr>
-		<td>网络搜索</td>
-		<td>关键值</td>
-		<td>一系列网页</td>
-	</tr>
-	<tr>
-		<td>商业交易</td>
-		<td>账号</td>
-		<td>一系列交易</td>
-	</tr>
-	<tr>
-		<td>IMDB</td>
-		<td>电影</td>
-		<td>一系列演员</td>
-	</tr>
+<tr>
+<td>应用领域</td>
+<td>键Key</td>
+<td>值Value</td>
+</tr>
+
+<tr>
+<td>基因组学</td>
+<td>氨基酸</td>
+<td>一系列密码子</td>
+</tr>
+
+<tr>
+<td>网络搜索</td>
+<td>关键值</td>
+<td>一系列网页</td>
+</tr>
+
+<tr>
+<td>商业交易</td>
+<td>账号</td>
+<td>一系列交易</td>
+</tr>
+
+<tr>
+<td>IMDB</td>
+<td>电影</td>
+<td>一系列演员</td>
+</tr>
 
 </table>
 
 
 **反向索引**
+
 <table>
-	<tr>
-		<td>应用领域</td>
-		<td>键Key</td>
-		<td>值Value</td>
-	</tr>
-	<tr>
-		<td>基因组学</td>
-		<td>基因片段</td>
-		<td>一系列位置</td>
-	</tr>
-	<tr>
-		<td>IMDB</td>
-		<td>演员</td>
-		<td>一系列电影</td>
-	</tr>
-	<tr>
-		<td>图书</td>
-		<td>术语</td>
-		<td>一系列页码</td>
-	</tr>
-	<tr>
-		<td>编译器</td>
-		<td>标识符</td>
-		<td>一系列使用的位置</td>
-	</tr>
-	<tr>
-		<td>文件搜索</td>
-		<td>关键字</td>
-		<td>文件集合</td>
-	</tr>
+
+<tr>
+<td>应用领域</td>
+<td>键Key</td>
+<td>值Value</td>
+</tr>
+
+<tr>
+<td>基因组学</td>
+<td>基因片段</td>
+<td>一系列位置</td>
+</tr>
+
+<tr>
+<td>IMDB</td>
+<td>演员</td>
+<td>一系列电影</td>
+</tr>
+
+<tr>
+<td>图书</td>
+<td>术语</td>
+<td>一系列页码</td>
+</tr>
+
+<tr>
+<td>编译器</td>
+<td>标识符</td>
+<td>一系列使用的位置</td>
+</tr>
+
+<tr>
+<td>文件搜索</td>
+<td>关键字</td>
+<td>文件集合</td>
+</tr>
 
 </table>
 
+[索引(以及反向索引)的查找](LookupIndex.java)
 
-**稀疏矩阵**
+[LookupIndexTest](../../../../../../../test/java/com/lun/algorithms4th/c3/searching/LookupIndexTest.java)
+
+[文件索引](FileIndex.java)
+
+[FileIndexTest](../../../../../../../test/java/com/lun/algorithms4th/c3/searching/FileIndexTest.java)
+
+
+### 稀疏矩阵 ###
 
 ![](image/SpareMatrix.png)
 
-	public class SparseVector {
-		private int d; // dimension
-		private SeparateChainingHashST<Integer, Double> st; // the vector, represented by index-value pairs
-	
-		public SparseVector(int d) {
-			this.d = d;
-			this.st = new SeparateChainingHashST<Integer, Double>();
-		}
-	
-		public void put(int i, double value) {
-			if (i < 0 || i >= d)
-				throw new IllegalArgumentException("Illegal index");
-			if (value == 0.0)
-				st.delete(i);
-			else
-				st.put(i, value);
-		}
-	
-		public double get(int i) {
-			if (i < 0 || i >= d)
-				throw new IllegalArgumentException("Illegal index");
-			if (st.contains(i))
-				return st.get(i);
-			else
-				return 0.0;
-		}
-	
-		public int nnz() {
-			return st.size();
-		}
-	
-		@Deprecated
-		public int size() {
-			return d;
-		}
-	
-		public int dimension() {
-			return d;
-		}
-	
-		public double dot(SparseVector that) {
-			if (this.d != that.d)
-				throw new IllegalArgumentException("Vector lengths disagree");
-			double sum = 0.0;
-	
-			// iterate over the vector with the fewest nonzeros
-			if (this.st.size() <= that.st.size()) {
-				for (int i : this.st.keys())
-					if (that.st.contains(i))
-						sum += this.get(i) * that.get(i);
-			} else {
-				for (int i : that.st.keys())
-					if (this.st.contains(i))
-						sum += this.get(i) * that.get(i);
-			}
-			return sum;
-		}
-	
-		public double dot(double[] that) {
-			double sum = 0.0;
-			for (int i : st.keys())
-				sum += that[i] * this.get(i);
-			return sum;
-		}
-	
-		public double magnitude() {
-			return Math.sqrt(this.dot(this));
-		}
-	
-		@Deprecated
-		public double norm() {
-			return Math.sqrt(this.dot(this));
-		}
-	
-		public SparseVector scale(double alpha) {
-			SparseVector c = new SparseVector(d);
-			for (int i : this.st.keys())
-				c.put(i, alpha * this.get(i));
-			return c;
-		}
-	
-		public SparseVector plus(SparseVector that) {
-			if (this.d != that.d)
-				throw new IllegalArgumentException("Vector lengths disagree");
-			SparseVector c = new SparseVector(d);
-			for (int i : this.st.keys())
-				c.put(i, this.get(i)); // c = this
-			for (int i : that.st.keys())
-				c.put(i, that.get(i) + c.get(i)); // c = c + that
-			return c;
-		}
-	
-		public String toString() {
-			StringBuilder s = new StringBuilder();
-			for (int i : st.keys()) {
-				s.append("(" + i + ", " + st.get(i) + ") ");
-			}
-			return s.toString();
-		}
-	
-		public static void main(String[] args) {
-			SparseVector a = new SparseVector(10);
-			SparseVector b = new SparseVector(10);
-			a.put(3, 0.50);
-			a.put(9, 0.75);
-			a.put(6, 0.11);
-			a.put(6, 0.00);
-			b.put(3, 0.60);
-			b.put(4, 0.90);
-			System.out.println("a = " + a);
-			System.out.println("b = " + b);
-			System.out.println("a dot b = " + a.dot(b));
-			System.out.println("a + b   = " + a.plus(b));
-		}
-	
-	}
+[稀疏矩阵](SparseVector.java)
 
 稀疏矩阵的用例：Google的PageRank（网页排名）算法，请查阅吴军著的《数学之美》
 

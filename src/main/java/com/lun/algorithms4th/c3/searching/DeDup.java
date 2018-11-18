@@ -1,5 +1,7 @@
 package com.lun.algorithms4th.c3.searching;
 
+import com.lun.algorithms4th.util.StdIn;
+
 /**
  *  The {@code DeDup} class provides a client for reading in a sequence of
  *  words from standard input and printing each word, removing any duplicates.
@@ -20,7 +22,7 @@ public class DeDup {
         SET<String> set = new SET<String>();
 
         // read in strings and add to set
-        /*
+        
         while (!StdIn.isEmpty()) {
             String key = StdIn.readString();
             if (!set.contains(key)) {
@@ -28,6 +30,6 @@ public class DeDup {
                 System.out.println(key);
             }
         }
-        */
+        
     }
 }
