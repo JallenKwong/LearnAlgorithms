@@ -31,9 +31,45 @@
 </tr>
 
 <tr>
-<td></td>
-<td><a href=""></a></td>
-<td></td>
+<td>1</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting/Selection.java">选择排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting#选择最排序">Link</a></td>
+</tr>
+
+<tr>
+<td>2</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting/Insertion.java">插入排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting#插入排序牌排序">Link</a></td>
+</tr>
+
+<tr>
+<td>3</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting/Shell.java">希尔排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting#希尔排序">Link</a></td>
+</tr>
+
+<tr>
+<td>4</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting/Merge.java">归并排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting#归并排序">Link</a></td>
+</tr>
+
+<tr>
+<td>5</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting/Quick.java">快速排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting#快速排序">Link</a></td>
+</tr>
+
+<tr>
+<td>6</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting/MaxPQ.java">基于堆的优先队列</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting#优先队列">Link</a></td>
+</tr>
+
+<tr>
+<td>7</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting/Heap.java">堆排序</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c2/sorting#堆排序">Link</a></td>
 </tr>
 
 </table>

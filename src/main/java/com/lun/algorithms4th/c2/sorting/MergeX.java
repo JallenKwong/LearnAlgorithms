@@ -1,8 +1,5 @@
 package com.lun.algorithms4th.c2.sorting;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 public class MergeX extends Merge{
 	
 	private static final int CUTOFF = 7;  // cutoff to insertion sort
@@ -30,11 +27,11 @@ public class MergeX extends Merge{
 		
 	}
 	
-	@Test
-	public void testInsertSort() {
-		Integer[] unsortedArray = createUnsortedArray();
-		insertionSort(unsortedArray, 0, unsortedArray.length - 1);
-//		printArray(unsortedArray);
-		Assert.assertTrue(isSorted(unsortedArray));
-	}
+//	@Test
+//	public void testInsertSort() {
+//		Integer[] unsortedArray = createUnsortedArray();
+//		insertionSort(unsortedArray, 0, unsortedArray.length - 1);
+////		printArray(unsortedArray);
+//		Assert.assertTrue(isSorted(unsortedArray));
+//	}
 }

@@ -46,13 +46,6 @@ public class Heap extends AbstractSorting {
 		pq[j - 1] = swap;
 	}
 
-	@Test
-	public void testSort() {
-		Character[] init = new Character[] { 'S', 'O', 'R', 'T', 'E', 'X', 'A', 'M', 'P', 'L', 'E' };
-		sort(init);
-		Assert.assertArrayEquals(new Character[] { 'A', 'E', 'E', 'L', 'M', 'O', 'P', 'R', 'S', 'T', 'X' }, init);
-	}
-
 }
 
 
