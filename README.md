@@ -85,9 +85,39 @@
 </tr>
 
 <tr>
-<td></td>
-<td><a href=""></a></td>
-<td><a href="">Link</a></td>
+<td>1</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching/SequentialSearchST.java">顺序查找</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching#无序链表中的顺序查找">Link</a></td>
+</tr>
+
+<tr>
+<td>2</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching/BinarySearchST.java">二分查找</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching#有序数组中的二分查找">Link</a></td>
+</tr>
+
+<tr>
+<td>3</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching/BinarySearchST.java">二叉查找树</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching#二叉查找树">Link</a></td>
+</tr>
+
+<tr>
+<td>4</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching/RedBlackBST.java">红黑树</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching#红黑二叉查找树">Link</a></td>
+</tr>
+
+<tr>
+<td>5</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching/SeparateChainingHashST.java">基于拉链法的散列表</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching#基于拉链法的散列表">Link</a></td>
+</tr>
+
+<tr>
+<td>6</td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching/LinearProbingHashST.java">基于线性探测法的散列表</a></td>
+<td><a href="src/main/java/com/lun/algorithms4th/c3/searching#基于线性探测法的散列表">Link</a></td>
 </tr>
 
 </table>

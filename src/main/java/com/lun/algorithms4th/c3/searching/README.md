@@ -16,545 +16,113 @@
 
 > 符号表是一种存储键值对的数据结构，支持两种操作：插入(put)，即将一组新的键值对存入表中；查找(get)，即根据给定的键得到相应的值。
 
+应用|查找的目的|键|值
+---|---|---|---
+字典|找出单词的解释|单词|释义
+图书索引|找出相关页码|术语|一串页码
+文件共享|找到歌曲的下载地址|歌曲名|计算机ID
+账户管理|处理交易|账户号码|交易详情
+网络搜索|找出相关网页|关键字|网页名称
+编译器|找出符号的类型和值|变量名|类型和值
+
+[符号表用例(统计出现频率最高的单词)](FrequencyCounter.java)
+
+[FrequencyCounterTest](../../../../../../../test/java/com/lun/algorithms4th/c3/searching/FrequencyCounterTest.java)
+
+### 无序链表中的顺序查找 ###
+
+**顺序查找(基于无序链表)**
+
+![](image/Trace-of-linked-list-ST-implementation-for-standard-indexing-client.png)
+
+[SequentialSearchST](SequentialSearchST.java)
+
+>**命题A** 在含有N对键值的基于（无序）链表的符号表中，未命中的查找的插入操作都需要N次比较。命中的查找在最坏情况下需要N次比较。向一个空表中插入N个不同的键需要~N^2/2次比较
+
+![](image/Costs-using-SequentialSearchST.png)
+
+对上图坐标点解释，对于第i次put操作
+
+1. 以**横坐标**为i，**纵坐标**为**该i次操**作进行比较的总次数 的位置画一个**灰点**。
+2. 以**横坐标**为i，**纵坐标**为**前i次**put()操作所需的平均比较次数的位置画一个**红点**。
+
+### 有序数组中的二分查找 ###
+
+**二分查找(基于有序数组)**
+
+![插入流程](image/Trace-of-linked-list-ST-implementation-for-standard-indexing-client.png)
+
+![查询流程](image/Trace-of-binary-search-for-rank-in-an-ordered-array.png)
+
+[BinarySearchST](BinarySearchST.java)
+
+>**命题B** 在N个键的有序数组中进行二分查找最多需(lgN+1)次比较(无论是否成功)。向大小为N的有序数组中插入一个新的元素在最坏情况下需要访问~2N次数组，因此向一个**空符号表**中插入N个元素在最坏情况下需要访问~N^2
+
+![](image/Costs-using-BinarySearchST.png)
+
+**简单的符号表实现的成本总结**
 <table>
 
 <thead>
 <tr>
-<td>应用</td>
-<td>查找的目的</td>
-<td>键</td>
-<td>值</td>
+<td rowspan=2>算法(数据结构)</td>
+<td colspan=2>最坏情况的成本(N次插入后)</td>
+<td colspan=2>平均情况下的成本(N次随机插入后)</td>
+<td rowspan=2>是否 高效地 支持有序性相关操作</td>
 </tr>
-</thead>
 
+<tr>
+<td>查找</td>
+<td>插入</td>
+<td>查找</td>
+<td>插入</td>
+</tr>
+
+</thead>
 <tbody>
 <tr>
-<td>字典</td>
-<td>找出单词的解释</td>
-<td>单词</td>
-<td>释义</td>
+<td>顺序查找（基于无序链表）</td>
+<td>N</td>
+<td>N</td>
+<td>N/2</td>
+<td>N</td>
+<td>否</td>
 </tr>
 
 <tr>
-<td>图书索引</td>
-<td>找出相关页码</td>
-<td>术语</td>
-<td>一串页码</td>
+<td>二分查找(基于有序数组)</td>
+<td>lgN</td>
+<td>2N</td>
+<td>lgN</td>
+<td>N</td>
+<td>是</td>
 </tr>
 
-<tr>
-<td>文件共享</td>
-<td>找到歌曲的下载地址</td>
-<td>歌曲名</td>
-<td>计算机ID</td>
-</tr>
-
-<tr>
-<td>账户管理</td>
-<td>处理交易</td>
-<td>账户号码</td>
-<td>交易详情</td>
-</tr>
-
-<tr>
-<td>网络搜索</td>
-<td>找出相关网页</td>
-<td>关键字</td>
-<td>网页名称</td>
-</tr>
-
-<tr>
-<td>编译器</td>
-<td>找出符号的类型和值</td>
-<td>变量名</td>
-<td>类型和值</td>
-</tr>
 </tbody>
-</table>
-
-**顺序查找(基于无序链表)**
-	
-	public class SequentialSearchST<Key, Value>{
-	
-		private int n; // 键值对的数目
-		private Node first; //头节点
-
-		// 节点基本数据结构
-		private class Node {
-			private Key key;
-			private Value val;
-			private Node next;
-
-			public Node(Key key, Value val, Node next)  {
-			    this.key  = key;
-			    this.val  = val;
-			    this.next = next;
-			}
-		}
-
-		public SequentialSearchST() {
-		}
-
-		public int size() {
-			return n;
-		}
-		public boolean isEmpty() {
-			return size() == 0;
-		}
-		public boolean contains(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to contains() is null");
-			return get(key) != null;
-		}
-		public Value get(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to get() is null"); 
-			for (Node x = first; x != null; x = x.next) {
-			    if (key.equals(x.key))
-				return x.val;
-			}
-			return null;
-		}		
-		public void put(Key key, Value value){
-			if (key == null) 
-				throw new IllegalArgumentException("first argument to put() is null"); 
-			if (val == null) {
-			    delete(key);
-			    return;
-			}
-
-			//若找到已存在键，则跟新它的对应的值
-			for(Node x = first; x != null;x = x.next){
-				if(x.key.equals(key)){
-					x.value = value;
-					return;
-				}
-			}
-
-			//若找不到，在链头插入
-			first = new Node(key, value, first);
-		}		
-		public void delete(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to delete() is null"); 
-			first = delete(first, key);
-		}
-		
-		private Node delete(Node x, Key key) {
-			if (x == null) return null;
-			if (key.equals(x.key)) {
-			    n--;
-			    return x.next;
-			}
-			//使用递归
-			x.next = delete(x.next, key);
-			return x;
-		}
-
-		public Iterable<Key> keys()  {
-			LinkedList<Key> queue = new LinkedList<Key>();
-			for (Node x = first; x != null; x = x.next)
-			    queue.add(x.key);
-			return queue;
-		}
-	}
->向一个空表中插入N个不同的键需要~N^2/2次比较
-
-
-**二分查找(基于有序数组)**
-
-	public class BinarySearchST<Key extends Comparable<Key>, Value> {
-		private static final int INIT_CAPACITY = 2;
-		private Key[] keys;
-		private Value[] vals;
-		private int n = 0;//键值数
-
-		//初始化 符号表
-		public BinarySearchST() {
-			this(INIT_CAPACITY);
-		}
-		
-		public BinarySearchST(int capacity) { 
-			keys = (Key[]) new Comparable[capacity]; 
-			vals = (Value[]) new Object[capacity]; 
-		}   
-		
-		public int size() {
-			return n;
-		}
-		public boolean isEmpty() {
-			return size() == 0;
-		}
-		public boolean contains(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to contains() is null");
-			return get(key) != null;
-		}
-
-		//
-		public Value get(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to get() is null"); 
-			if (isEmpty()) return null;
-			int i = rank(key); 
-			if (i < n && keys[i].compareTo(key) == 0) 
-				return vals[i];
-			return null;
-		} 
-
-		public void put(Key key, Value val)  {
-			if (key == null) 
-				throw new IllegalArgumentException("first argument to put() is null"); 
-
-			if (val == null) {
-				delete(key);
-				return;
-			}
-
-			int i = rank(key);//若表中不存在该键，rank返回表中小于它的键的数量
-
-			//如果表已经存在表中
-			if (i < n && keys[i].compareTo(key) == 0) {
-				vals[i] = val;
-				return;
-			}
-
-			//插入新的键值对
-
-			if (n == keys.length)//数组不够存了，就延长数组
-				resize(2 * keys.length);
-
-			for (int j = n; j > i; j--)  {
-				keys[j] = keys[j-1];
-				vals[j] = vals[j-1];
-			}
-				keys[i] = key;
-				vals[i] = val;
-				n++;
-
-			assert check();
-		} 	
-
-		private void resize(int capacity) {
-			assert capacity >= n;
-			Key[]   tempk = (Key[])new Comparable[capacity];
-			Value[] tempv = (Value[])new Object[capacity];
-			for (int i = 0; i < n; i++) {
-				tempk[i] = keys[i];
-				tempv[i] = vals[i];
-			}
-			vals = tempv;
-			keys = tempk;
-		}
-
-		//找键的位置 （迭代）
-		public int rank(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to rank() is null"); 
-
-			int lo = 0, hi = n-1; 
-			while (lo <= hi) { 
-				int mid = lo + (hi - lo) / 2; 
-				int cmp = key.compareTo(keys[mid]);
-				if(cmp < 0) 
-					hi = mid - 1; 
-				else if (cmp > 0) 
-					lo = mid + 1; 
-				else 
-					return mid; 
-			} 
-			return lo;
-		} 
-
-		//找键的位置（递归）
-		public int rank2(Key key, int lo, int hi){
-			if(hi < lo)
-				return lo;
-			int mid = lo + (hi - lo) / 2;
-			int cmp = key.compareTo(keys[mid]);
-			if(cmp < 0)
-				return rank2(key, lo, mid - 1);
-			else if(cmp > 0)
-				return rank2(key, mid+1, hi);
-			else
-				return mid;
-		}
-
-		public void delete(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to delete() is null"); 
-			if (isEmpty()) 
-				return;
-
-			// compute rank
-			int i = rank(key);
-
-			// key not in table
-			if (i == n || keys[i].compareTo(key) != 0) {
-				return;
-			}
-
-			//需要进行移位操作，覆盖要删除的值
-			for (int j = i; j < n-1; j++)  {
-				keys[j] = keys[j+1];
-				 vals[j] = vals[j+1];
-			}
-
-			n--;
-			keys[n] = null;  // to avoid loitering
-			vals[n] = null;
-
-			// resize if 1/4 full
-			if (n > 0 && n == keys.length/4) 
-			resize(keys.length/2);
-
-			assert check();
-		} 
-
-
-		//次要方法
-		public void deleteMin() {
-			if (isEmpty()) 
-				throw new NoSuchElementException("Symbol table underflow error");
-			delete(min());
-		}
-
-		public void deleteMax() {
-			if (isEmpty()) 
-				throw new NoSuchElementException("Symbol table underflow error");
-			delete(max());
-		}
-
-		public Key min() {
-			if (isEmpty()) 
-				throw new NoSuchElementException("called min() with empty symbol table");
-			return keys[0]; 
-		}
-
-		public Key max() {
-			if (isEmpty()) 
-				throw new NoSuchElementException("called max() with empty symbol table");
-			return keys[n-1];
-		}	
-
-		public Key select(int k) {
-			if (k < 0 || k >= size()) {
-				throw new IllegalArgumentException("called select() with invalid argument: " + k);
-			}
-			return keys[k];
-		}	
-
-		//小于等于key的最大的键
-		public Key floor(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to floor() is null"); 
-			int i = rank(key);
-			if (i < n && key.compareTo(keys[i]) == 0) 
-				return keys[i];
-			if (i == 0) 
-				return null;
-			else 
-				return keys[i-1];
-		}
-
-		//大于等于key的最小的键	
-		public Key ceiling(Key key) {
-			if (key == null) 
-				throw new IllegalArgumentException("argument to ceiling() is null"); 
-			int i = rank(key);
-			if (i == n) 
-				return null; 
-			else 
-				return keys[i];
-		}
-
-		public int size(Key lo, Key hi) {
-			if (lo == null) 
-				throw new IllegalArgumentException("first argument to size() is null"); 
-			if (hi == null) 
-				throw new IllegalArgumentException("second argument to size() is null"); 
-
-			if (lo.compareTo(hi) > 0) 
-				return 0;
-			if (contains(hi)) 
-				return rank(hi) - rank(lo) + 1;
-			else              
-				return rank(hi) - rank(lo);
-		}
-		
-		public Iterable<Key> keys() {
-			return keys(min(), max());
-		}
-		
-		public Iterable<Key> keys(Key lo, Key hi) {
-			if (lo == null) 
-				throw new IllegalArgumentException("first argument to keys() is null"); 
-			if (hi == null) 
-				throw new IllegalArgumentException("second argument to keys() is null"); 
-
-			LinkedList<Key> queue = new LinkedList<Key>(); 
-			if (lo.compareTo(hi) > 0) 
-				return queue;
-			for (int i = rank(lo); i < rank(hi); i++) 
-				queue.add(keys[i]);
-			if (contains(hi)) 
-				queue.add(keys[rank(hi)]);
-			return queue; 
-		}
-
-		//检测符号表 的 完整性
-		private boolean check() {
-			return isSorted() && rankCheck();
-		}
-
-		// are the items in the array in ascending order?
-		private boolean isSorted() {
-			for (int i = 1; i < size(); i++)
-				if (keys[i].compareTo(keys[i-1]) < 0) 
-					return false;
-			return true;
-		}
-
-		// check that rank(select(i)) = i
-		private boolean rankCheck() {
-			for (int i = 0; i < size(); i++)
-				if (i != rank(select(i))) 
-					return false;
-			for (int i = 0; i < size(); i++)
-				if (keys[i].compareTo(select(rank(keys[i]))) != 0) 
-					return false;
-			return true;
-		}
-	}
-
->在N个键的有序数组中进行二分查找最多需(lgN+1)次比较(无论是否成功)
-
-**简单的符号表实现的成本总结**
-<table>
-	<thead>
-		<tr>
-			<td rowspan=2>算法(数据结构)</td>
-			<td colspan=2>最坏情况的成本(N次插入后)</td>
-			<td colspan=2>平均情况下的成本(N次随机插入后)</td>
-			<td rowspan=2>是否 高效地 支持有序性相关操作</td>
-		</tr>
-		<tr>
-			<td>查找</td>
-			<td>插入</td>
-			<td>查找</td>
-			<td>插入</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>顺序查找（基于无序链表）</td>
-			<td>N</td>
-			<td>N</td>
-			<td>N/2</td>
-			<td>N</td>
-			<td>否</td>
-		</tr>
-		<tr>
-			<td>二分查找(基于有序数组)</td>
-			<td>lgN</td>
-			<td>2N</td>
-			<td>lgN</td>
-			<td>N</td>
-			<td>是</td>
-		</tr>
-	</tbody>
 </table>
 
 ---
 
 **符号表的各种实现的优缺点**
-<table>
-	<thead>
-		<tr>
-			<td>使用的数据结构</td>
-			<td>实现</td>
-			<td>优点</td>
-			<td>缺点</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>链表(顺序查找)</td>
-			<td>SequentialSearchST</td>
-			<td>适用小型问题</td>
-			<td>对于大型符号表很慢</td>
-		</tr>
-		<tr>
-			<td>有序数组(二分查找)</td>
-			<td>BinarySearchST</td>
-			<td>最优的查找效率和空间需求，能够进行有序相关的操作</td>
-			<td>插入操作很慢</td>
-		</tr>
-		<tr>
-			<td>二叉查找树</td>
-			<td>BST</td>
-			<td>实现简单，能够进行有序性的相关操作</td>
-			<td>没有性能上界的保证<br/>
-				链接需要额外的空间
-			</td>
-		</tr>
-		<tr>
-			<td>平衡二叉树</td>
-			<td>RedBlackBST</td>
-			<td>最优的查找和插入效率，能够进行有序性相关的操作</td>
-			<td>链接需要额外的空间</td>
-		</tr>
-		<tr>
-			<td>散列表</td>
-			<td>
-				SeparateChainHashST
-				<br/>
-				LinearProbingHashST
-			</td>
-			<td>能够快速地查找和插入常见类型的数据</td>
-			<td>需要计算每种类型的数据的散列<br/>
-				无法进行有序性的相关操作<br/>
-				链接和空节点需要额外的空间
-			</td>
-		</tr>
-	</tbody>
-</table>
 
-二叉查找树
----
+使用的数据结构|实现|优点|缺点
+---|---|---|---
+链表(顺序查找)|SequentialSearchST|适用小型问题|对于大型符号表很慢
+有序数组(二分查找)|BinarySearchST|最优的查找效率和空间需求，能够进行有序相关的操作|插入操作很慢
+二叉查找树|BST|实现简单，能够进行有序性的相关操作|没有性能上界的保证链接需要额外的空间
+平衡二叉树|RedBlackBST|最优的查找和插入效率，能够进行有序性相关的操作|链接需要额外的空间
+散列表|SeparateChainHashST<br>LinearProbingHashST|能够快速地查找和插入常见类型的数据|需要计算每种类型的数据的散列无法进行有序性的相关操作链接和空节点需要额外的空间
+
+
+## 二叉查找树 ##
 
 >定义。一颗二叉查找树Binary Search Tree，其中每个结点都含有一个Comparable的键(以及相关联的值)且每个结点的键都大于其左子树中的任意结点的键而小于右子树的任意结点的键。
 
-	public class BST<Key extends Comparable<Key>, Value> {
-		private Node root; // root of BST
-	
-		private class Node {
-			private Key key; // sorted by key
-			private Value val; // associated data
-			private Node left, right; // left and right subtrees
-			private int size; // number of nodes in subtree
-	
-			public Node(Key key, Value val, int size) {
-				this.key = key;
-				this.val = val;
-				this.size = size;
-			}
-		}
+---
 
-		public int size() {
-			return size(root);
-		}
-	
-		// return number of key-value pairs in BST rooted at x
-		private int size(Node x) {
-			if (x == null)
-				return 0;
-			else
-				return x.size;
-		}
+>树的基本术语——**结点的层次和树的高度**：
 
-
-	}
+>树中的每个结点都处在一定的**层次**上。结点的层次从树根开始定义，根结点为**第一层**，它的孩子结点为**第二层**，以此类推，一个结点所在的层次为其双亲结点所在的层次+1。树中结点的最大层次称为**树的高度**(或**树的深度**)
 
 
 **详解二叉查找树**
@@ -565,73 +133,25 @@
 
 **一个标准二叉查找树的实例图**
 
-![](image/bst-subtree-count.png)
+![](image/Two-BSTs-that-represent-the-same-set-of-keys.png)
+
+[二叉查找树](BinarySearchST.java)
 
 ### 查找 ###
 
-	/**
-	 * 查找
-	 * @param key
-	 * @return
-	 */
-	public Value get(Key key) {
-		return get(root, key);
-	}
-
-	private Value get(Node x, Key key) {
-		if (key == null)
-			throw new IllegalArgumentException("calls get() with a null key");
-		if (x == null)
-			return null;
-		int cmp = key.compareTo(x.key);
-		if (cmp < 0)
-			return get(x.left, key);
-		else if (cmp > 0)
-			return get(x.right, key);
-		else
-			return x.val;
-	}
-
-	public boolean contains(Key key) {
-		if (key == null)
-			throw new IllegalArgumentException("argument to contains() is null");
-		return get(key) != null;
-	}
-
-
 ![](image/bst-search.png)
+
+[二叉查找树#get](BinarySearchST.java)
 
 ### 插入 ###
 
-	public void put(Key key, Value val) {
-		if (key == null)
-			throw new IllegalArgumentException("calls put() with a null key");
-		if (val == null) {
-			//delete(key);
-			return;
-		}
-		root = put(root, key, val);
-
-	}
-
-	private Node put(Node x, Key key, Value val) {
-		if (x == null)
-			return new Node(key, val, 1);
-		int cmp = key.compareTo(x.key);
-		if (cmp < 0)
-			x.left = put(x.left, key, val);
-		else if (cmp > 0)
-			x.right = put(x.right, key, val);
-		else
-			x.val = val;
-		x.size = 1 + size(x.left) + size(x.right);
-		return x;
-	}
-
 ![](image/bst-insert.png)
 
-### 分析 ###
+![](image/BST-trace-for-standard-indexing-client.png)
 
+[二叉查找树#put](BinarySearchST.java)
+
+### 分析 ###
 
 ![](image/bst-best.png)
 
@@ -639,164 +159,40 @@
 
 ![](image/bst-worst.png)
 
->在由N个随机键构造的二叉查找树中，查找命中平均所需的比较次数、插入操作、查找未命中所需的比较次数 为 ~2InN(约1.39lgN)
+>**命题C** 在由N个随机键构造的二叉查找树中，查找命中平均所需的比较次数、插入操作、查找未命中所需的比较次数 为 ~2InN(约1.39lgN)
+
+![](image/Typical-BST-built-from-256-random-keys.png)
+
+![](image/Costs-using-BST.png)
 
 ### 有序性相关的方法与删除操作 ###
 
 #### 最大键和最小键 ####
 
-	public boolean isEmpty() {
-		return size() == 0;
-	}
-
-	public Key min() {
-		if (isEmpty())
-			throw new NoSuchElementException("calls min() with empty symbol table");
-		return min(root).key;
-	}
-
-	private Node min(Node x) {
-		if (x.left == null)
-			return x;
-		else
-			return min(x.left);
-	}
+[二叉查找树#min](BinarySearchST.java)
 
 找出最大键的方法类似的，只是变为查找右子树
 
-	public Key max() {
-		if (isEmpty())
-			throw new NoSuchElementException("calls max() with empty symbol table");
-		return max(root).key;
-	}
-
-	private Node max(Node x) {
-		if (x.right == null)
-			return x;
-		else
-			return max(x.right);
-	}
+[二叉查找树#max](BinarySearchST.java)
 
 #### 向上取整和向下取整 ####
 
 ![](image/bst-select.png)
 
-	public Key floor(Key key) {
-		if (key == null)
-			throw new IllegalArgumentException("argument to floor() is null");
-		if (isEmpty())
-			throw new NoSuchElementException("calls floor() with empty symbol table");
-		Node x = floor(root, key);
-		if (x == null)
-			return null;
-		else
-			return x.key;
-	}
-
-	private Node floor(Node x, Key key) {
-		if (x == null)
-			return null;
-		int cmp = key.compareTo(x.key);
-		if (cmp == 0)
-			return x;
-		if (cmp < 0)
-			return floor(x.left, key);
-		Node t = floor(x.right, key);
-		if (t != null)
-			return t;
-		else
-			return x;
-	}
-
-	public Key floor2(Key key) {
-		return floor2(root, key, null);
-	}
-
-	private Key floor2(Node x, Key key, Key best) {
-		if (x == null)
-			return best;
-		int cmp = key.compareTo(x.key);
-		if (cmp < 0)
-			return floor2(x.left, key, best);
-		else if (cmp > 0)
-			return floor2(x.right, key, x.key);
-		else
-			return x.key;
-	}
+[二叉查找树#floor](BinarySearchST.java)
 
 ---
 
-	public Key ceiling(Key key) {
-		if (key == null)
-			throw new IllegalArgumentException("argument to ceiling() is null");
-		if (isEmpty())
-			throw new NoSuchElementException("calls ceiling() with empty symbol table");
-		Node x = ceiling(root, key);
-		if (x == null)
-			return null;
-		else
-			return x.key;
-	}
-
-	private Node ceiling(Node x, Key key) {
-		if (x == null)
-			return null;
-		int cmp = key.compareTo(x.key);
-		if (cmp == 0)
-			return x;
-		if (cmp < 0) {
-			Node t = ceiling(x.left, key);
-			if (t != null)
-				return t;
-			else
-				return x;
-		}
-		return ceiling(x.right, key);
-	}
+[二叉查找树#ceiling](BinarySearchST.java)
 
 #### 排名 ####
 
 ![](image/bst-select.png)
 
-	public Key select(int k) {
-		if (k < 0 || k >= size()) {
-			throw new IllegalArgumentException("argument to select() is invalid: " + k);
-		}
-		Node x = select(root, k);
-		return x.key;
-	}
+[二叉查找树#select](BinarySearchST.java)
 
-	// Return key of rank k.
-	private Node select(Node x, int k) {
-		if (x == null)
-			return null;
-		int t = size(x.left);
-		if (t > k)
-			return select(x.left, k);
-		else if (t < k)
-			return select(x.right, k - t - 1);
-		else
-			return x;
-	}
+[二叉查找树#rank](BinarySearchST.java)
 
-	public int rank(Key key) {
-		if (key == null)
-			throw new IllegalArgumentException("argument to rank() is null");
-		return rank(key, root);
-	}
-
-	// Number of keys in the subtree less than key.
-	private int rank(Key key, Node x) {
-		if (x == null)
-			return 0;
-		int cmp = key.compareTo(x.key);
-		if (cmp < 0)
-			return rank(key, x.left);
-		else if (cmp > 0)
-			return 1 + size(x.left) + rank(key, x.right);
-		else
-			return size(x.left);
-	}
 
 #### 删除操作 ####
 
@@ -804,19 +200,7 @@
 
 ![](image/bst-deletemin.png)
 
-	public void deleteMin() {
-		if (isEmpty())
-			throw new NoSuchElementException("Symbol table underflow");
-		root = deleteMin(root);
-	}
-
-	private Node deleteMin(Node x) {
-		if (x.left == null)
-			return x.right;
-		x.left = deleteMin(x.left);
-		x.size = size(x.left) + size(x.right) + 1;
-		return x;
-	}
+[二叉查找树#deleteMin](BinarySearchST.java)
 
 deleteMax()与deleteMax()类似，关键deleteMax(x.right)
 
@@ -832,86 +216,70 @@ deleteMax()与deleteMax()类似，关键deleteMax(x.right)
 
 ![](image/bst-delete.png)
 
-
-
-	public void delete(Key key) {
-		if (key == null)
-			throw new IllegalArgumentException("calls delete() with a null key");
-		root = delete(root, key);
-	}
-
-	private Node delete(Node x, Key key) {
-		if (x == null)
-			return null;
-
-		int cmp = key.compareTo(x.key);
-		if (cmp < 0)
-			x.left = delete(x.left, key);
-		else if (cmp > 0)
-			x.right = delete(x.right, key);
-		else {
-			if (x.right == null)
-				return x.left;
-			if (x.left == null)
-				return x.right;
-			Node t = x;
-			x = min(t.right);
-			x.right = deleteMin(t.right);
-			x.left = t.left;
-		}
-		x.size = size(x.left) + size(x.right) + 1;
-		return x;
-	}
+[二叉查找树#delete](BinarySearchST.java)
 
 #### 范围查找 ####
 
-	public Iterable<Key> keys(Key lo, Key hi) {
-		if (lo == null)
-			throw new IllegalArgumentException("first argument to keys() is null");
-		if (hi == null)
-			throw new IllegalArgumentException("second argument to keys() is null");
+![](image/Range-search-in-a-BST.png)
 
-		Queue<Key> queue = new Queue<Key>();
-		keys(root, queue, lo, hi);
-		return queue;
-	}
+[二叉查找树#keys](BinarySearchST.java)
 
-	private void keys(Node x, Queue<Key> queue, Key lo, Key hi) {
-		if (x == null)
-			return;
-		int cmplo = lo.compareTo(x.key);
-		int cmphi = hi.compareTo(x.key);
-		if (cmplo < 0)
-			keys(x.left, queue, lo, hi);
-		if (cmplo <= 0 && cmphi >= 0)
-			queue.enqueue(x.key);
-		if (cmphi > 0)
-			keys(x.right, queue, lo, hi);
-	}
+#### 性能分析 ####
 
-#### 高度 ####
+>**命题E** 在一棵二叉查找树中，所有操作在最坏情况下所需的时间都和树的高度成正比。
 
-	public int height() {
-		return height(root);
-	}
+**简单的符号表实现的成本总结**
+<table>
 
-	private int height(Node x) {
-		if (x == null)
-			return -1;
-		return 1 + Math.max(height(x.left), height(x.right));
-	}
+<thead>
+<tr>
+<td rowspan=2>算法(数据结构)</td>
+<td colspan=2>最坏情况的成本(N次插入后)</td>
+<td colspan=2>平均情况下的成本(N次随机插入后)</td>
+<td rowspan=2>是否 高效地 支持有序性相关操作</td>
+</tr>
 
-平衡查找树
----
+<tr>
+<td>查找</td><td>插入</td>
+<td>查找</td><td>插入</td>
+</tr>
+
+</thead>
+<tbody>
+<tr>
+<td>顺序查找（基于无序链表）</td>
+<td>N</td><td>N</td>
+<td>N/2</td><td>N</td>
+<td>否</td>
+</tr>
+
+<tr>
+<td>二分查找(基于有序数组)</td>
+<td>lgN</td><td>2N</td>
+<td>lgN</td><td>N</td>
+<td>是</td>
+</tr>
+
+<tr>
+<td>二叉树查找(二叉查找树)</td>
+<td>N</td><td>N</td>
+<td>1.39lgN</td><td>1.39lgN</td>
+<td>是</td>
+</tr>
+
+</tbody>
+</table>
+
+## 平衡查找树 ##
 
 ### 2-3查找树 ###
 
-	一棵 2-3 查找树或为一棵空树，或由以下结点组成：
+一棵 2-3 查找树或为一棵空树，或由以下结点组成：
+
+1. 2-结点，含有一个键（以及对应的值）和两条链接，左链接指向的2-3树中的键都小于该结点，右链接指向的2-3树中的键都大于该结点。
+2. 3-结点，含有两个键（以及对应的值）和三条链接，左链接指向的2-3树中的键都小于该结点，中链接指向的2-3中的键都位于该结点的两个之间，右链接指向的2-3树中的键都大于该结点。
 	
-	1. 2-结点，含有一个键（以及对应的值）和两条链接，左链接指向的2-3树中的键都小于该结点，右链接指向的2-3树中的键都大于该结点。
-	2. 3-结点，含有两个键（以及对应的值）和三条链接，左链接指向的2-3树中的键都小于该结点，中链接指向的2-3中的键都位于该结点的两个之间，右链接指向的2-3树中的键都大于该结点。
-	
-	指向空树的链接称为 空链接。
+指向空树的链接称为 **空链接**。
 
 ![](image/23tree-anatomy.png)
 
@@ -949,9 +317,194 @@ deleteMax()与deleteMax()类似，关键deleteMax(x.right)
 
 ![](image/2-3construction-traces.png)
 
+>**命题F** 在一棵大小为N的2-3树中，查找和插入操作访问的结点必然不超过lgN个。
+
+![](image/Typical-2-3-tree-built-from-random-keys.png)
+
+尽管我们可以用不同的数据类型表示2-结点和3-结点并写出变换所需的代码，但用这种直白的表示方法实现大多数的操作并不方便，因此需要处理的情况实在太多。
+
+我们需要维护两种不同类型的结点，将被查找的键和结点中的每个键进行比较，将连接和其他信息从一种结点复制到另一种结点，将结点从一种数据类型转换到另一种数据类型，等等
+
+实现这些不仅需要大量的代码，而且它们所产生的额外开销可能会使算法比标准的二叉查找树更慢。
+
+平衡一棵树的初衷是为了消除最坏的情况，但我们希望这种保障所需的代码能够越少越好。
+
+红黑二叉查找树就应运而生。
+
 ### 红黑二叉查找树 ###
 
-具有2-3树性质的平衡二叉树，这样可以复用平衡二叉树的代码。
+红黑树背后的基本思想是用标准的二叉查找树（完全由2-结点构成）和一些额外的信息（替换3-结点）来表示2-3树。
+
+#### 替换3-结点 ####
+
+![](image/Encoding-a-3-node-with-two-2-nodes-connected-by-a-left-leaning-red-link.png)
+
+树中的链接分两种类型：
+
+1. **红链接**将两个2-结点连接起来构成一个**3-结点**
+2. **黑链接**这是2-3树中的普通链接
+
+准确的说，将3-结点表示为有一条**左斜**得红色链接（两个2-结点其中之一是另一个的左子结点）相连的两个2-结点。
+
+这表示法的一个优点是，无需修改get()方法
+
+红黑树的另一种定义是含有红黑链接并满足下列条件的二叉查找树：
+
+- **红链接**均为左链接
+- 没有任何一个结点同时和两条**红链接**相连
+- 该数是完美黑色平衡的，即任意空链接到根结点的路径上的**黑链接**数量相同
+
+![](image/A-red-black-tree-with-horizontal-red-links-is-a-2-3-tree.png)
+
+![](image/1-1-correspondence-between-red-black-BSTs-and-2-3-trees.png)
+
+#### 结点表示 ####
+
+![](image/Node-representation-for-red-black-BSTs.png)
+
+#### 旋转 ####
+
+在实现的操作中可能会出现
+
+1. 红色**右**链接
+2. 两条连续的红链接
+
+但在操作完成前这些情况都会被小心地**旋转**并修复
+
+![左旋转](image/left-rotate.png)![有旋转](image/right-rotate.png)
+
+#### 向单个2-结点中插入新值 ####
+
+![](image/Insert-into-a-single-2-node.png)
+
+#### 向树底部的2-结点插入新键 ####
+
+![](image/Insert-into-a-2-node-at-the-bottom.png)
+
+#### 向一棵双键树（即一个3-结点）中插入新键 ####
+
+![](image/Insert-into-a-single-3-node.png)
+
+#### 颜色转换 ####
+
+用filpColors()来转换一个结点的**两个红色子结点**的颜色，同时还要将父结点的颜色由黑变红。
+
+![](image/Flipping-colors-to-split-a-4-node.png)
+
+**根结点总是黑色的**
+
+每次插入后都会将根结点设为黑色。注意，每当跟结点有红变黑时树的黑链接高度就会加1
+
+#### 向树底部的3-结点插入新键 ####
+
+![](image/Insert-into-a-3-node-at-the-bottom.png)
+
+#### 将红链接在树中向上传递 ####
+
+2-3树中的插入算法需要我们分解3-结点，将中间键插入父结点，如此这般直到遇到一个2-结点或是跟结点。
+
+在沿着插入点到根结点的路径向上移动时所在经过的每个结点中顺序完成以下操作：
+
+- 若 右子结点是红色的 而 左子结点是黑色的，进行左旋转
+- 若 右子结点是红色的 且 它的左子结点也是红色的，进行右旋转
+- 若 左右子结点均为公社，进行 颜色转化
+
+![](image/Passing-a-red-link-up-a-red-black-BST.png)
+
+[红黑树#put](RedBlackBST.java)
+
+### 实现 ###
+
+[红黑树](RedBlackBST.java)
+
+![红黑树构造轨迹](image/Red-black-BST-construction-traces.png)
+
+### 删除操作 ###
+
+TODO:
+
+### 红黑树的性质 ###
+
+>**命题G** 一棵大小为N的红黑树的高度不会超过2lgN
+
+![](image/Typical-red-black-BST-built-from-random-keys-null-links-omitted.png)
+
+>**命题H** 一棵大小为N的红黑树，根结点的任意结点的平均长度为~1.00lgN
+
+![升序构造红黑树](image/Red-black-BST-built-from-ascending-keys-null-links-omitted.png)
+
+---
+
+**tale.txt**|单词数|不同单词数|比较次数(模型预测)|比较次数(实际)
+---|---|---|---|---
+长度大于等于8的单词|14350|5737|12.6|12.1
+
+![](image/Costs-using-RedBlackBST.png)
+
+---
+
+>**命题I** 一棵红黑树中，以下操作在最坏情况下所需的时间是对数级别的
+>- get()
+>- put()
+>- min()查找最小键
+>- max()查找最大键
+>- floor()
+>- ceiling()
+>- rank()
+>- select()
+>- deleteMin()
+>- deleteMax()
+>- delete()
+>- range()
+
+**各种符号表实现的成本总结**
+<table>
+
+<thead>
+<tr>
+<td rowspan=2>算法(数据结构)</td>
+<td colspan=2>最坏情况的成本(N次插入后)</td>
+<td colspan=2>平均情况下的成本(N次随机插入后)</td>
+<td rowspan=2>是否 高效地 支持有序性相关操作</td>
+</tr>
+
+<tr>
+<td>查找</td><td>插入</td>
+<td>查找</td><td>插入</td>
+</tr>
+
+</thead>
+<tbody>
+<tr>
+<td>顺序查找（基于无序链表）</td>
+<td>N</td><td>N</td>
+<td>N/2</td><td>N</td>
+<td>否</td>
+</tr>
+
+<tr>
+<td>二分查找(基于有序数组)</td>
+<td>lgN</td><td>2N</td>
+<td>lgN</td><td>N</td>
+<td>是</td>
+</tr>
+
+<tr>
+<td>二叉树查找(二叉查找树)</td>
+<td>N</td><td>N</td>
+<td>1.39lgN</td><td>1.39lgN</td>
+<td>是</td>
+</tr>
+
+<tr>
+<td>2-3树查找(红黑树)</td>
+<td>2lgN</td><td>2lgN</td>
+<td>1.00lgN</td><td>1.00lgN</td>
+<td>是</td>
+</tr>
+
+</tbody>
+</table>
 
 
 ## 散列表 ##
@@ -1061,66 +614,52 @@ M为 散列表的大小
 </tr>
 
 <tr>
-<td>查找</td>
-<td>插入</td>
-<td>查找</td>
-<td>插入</td>
+<td>查找</td><td>插入</td>
+<td>查找</td><td>插入</td>
 </tr>
 
 <tr>
 <td>顺序查询（无序链表）</td>
-<td>N</td>
-<td>N</td>
-<td>N/2</td>
-<td>N</td>
+<td>N</td><td>N</td>
+<td>N/2</td><td>N</td>
 <td>equals()</td>
 <td>48N</td>
 </tr>
 
 <tr>
 <td>二分查找（有序数组）</td>
-<td>lgN</td>
-<td>N</td>
-<td>lgN</td>
-<td>N/2</td>
+<td>lgN</td><td>N</td>
+<td>lgN</td><td>N/2</td>
 <td rowspan=3>compareTo()</td>
 <td>16N</td>
 </tr>
 
 <tr>
 <td>二叉树查找（二叉查找树）</td>
-<td>N</td>
-<td>N</td>
-<td>1.39lgN</td>
-<td>1.39lgN</td>
+<td>N</td><td>N</td>
+<td>1.39lgN</td><td>1.39lgN</td>
 <td>64N</td>
 </tr>
 
 <tr>
 <td>2-3树查找（红黑树）</td>
-<td>2lgN</td>
-<td>2lgN</td>
-<td>1.00lgN</td>
-<td>1.00lgN</td>
+<td>2lgN</td><td>2lgN</td>
+<td>1.00lgN</td><td>1.00lgN</td>
 <td>64N</td>
 </tr>
 
 <tr>
 <td>拉链法（链表数组）</td>
-<td>&lt;lgN</td>
-<td>&lt;lgN</td>
-<td>N/(2M)</td>
-<td>N/M</td>
+<td>&lt;lgN</td><td>&lt;lgN</td>
+<td>N/(2M)</td><td>N/M</td>
 <td rowspan=2>equals()<br/>hashCode()</td>
 <td>48N+32M</td>
 </tr>
 
 <tr>
 <td>线性探测法（并行数组）</td>
-<td>clgN</td>
-<td>clgN</td>
-<td>&lt;1.5</td>
-<td>&lt;2.5</td>
+<td>clgN</td><td>clgN</td>
+<td>&lt;1.5</td><td>&lt;2.5</td>
 <td>(32N, 128N)</td>
 </tr>
 
