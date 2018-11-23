@@ -1,6 +1,5 @@
 package com.lun.algorithms4th.c3.searching;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -145,11 +144,13 @@ public class LinearProbingHashST<Key, Value> implements BaseST<Key, Value>{
 
 		int i;
 		for (i = hash(key); keys[i] != null; i = (i + 1) % tableSize) {
-			if (keys[i].equals(key)) {
+			if (keys[i].equals(key)) {//update value
 				vals[i] = val;
 				return;
 			}
 		}
+		
+		//new key value 
 		keys[i] = key;
 		vals[i] = val;
 		numOfKvPairs++;
