@@ -155,5 +155,46 @@ Event的实现能够表示这4种类型的事件，允许粒子的值为null
 
 ## 后缀数组 ##
 
+### 最长重复子字符串 ###
 
 
+"to be or not to be"字符串的**最长重复子字符串**就是"to be"。
+
+**你能在长度为数百万个字符的字符串中找出它的最长重复子字符串吗**？
+
+应用举例：
+
+1. 代码重构
+2. 给定的基因中存在大量相同的片段
+
+### 暴力解法 ###
+
+给定两个字符串，找到他们的最长公共前缀（两者的前缀字符串中的相同且最长者）。
+
+暴力解法
+
+    private static int lcpSuffix(String s, String t) {
+        int n = Math.min(s.length(), t.length());
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) != t.charAt(i)) return i;
+        }
+        return n;
+    }
+
+时间复杂度为O(N^2)。用这种方法处理含有上百万个字符的碱基对序列将会调用几百亿次lcpSuffix，显然这是不可行的。
+
+### 后缀排序 ###
+
+神奇巧妙高效找出字符串的最长重复字符串：
+
+用Java的substring()创建一个由字符串s的所有后缀字符串，然后将该数组排序。
+
+![](image/Computing-the-LRS-by-sorting-suffixes.png)
+
+排序后，最长重复子字符串会出现在数组中的相邻位置。只需遍历排序后的数组一遍即可在相邻元素中找出最长公共前缀。
+
+### 定位字符串 ###
+
+子字符串查找
+
+![](image/Idealized-view-of-a-typical-web-search.png)
